@@ -1,0 +1,75 @@
+<%- include('../partials/_admin-layout-top') %>
+
+<h1>Announcements</h1>
+<p class="hint" style="margin-top:-8px;">Short notices shown in the "Latest Announcements" strip on the homepage - e.g. "Temple closed for renovation" or "Special pooja this Friday". Unlike Programs, these have no date and stay visible until you hide or delete them.</p>
+
+<div class="panel">
+  <h2>Add an Announcement</h2>
+  <form method="POST" action="/admin/announcements/add">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" placeholder="e.g. Amma coming soon" required maxlength="120">
+      </div>
+      <div class="form-group">
+        <label for="order">Display Order</label>
+        <input type="number" id="order" name="order" value="0">
+        <p class="hint">Lower numbers appear first. Leave as 0 to sort newest-first.</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="message">Details (optional)</label>
+      <textarea id="message" name="message" rows="3" placeholder="Any extra detail devotees should know. Leave blank for a short, one-line announcement."></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Announcement</button>
+  </form>
+</div>
+
+<% if (!announcements.length) { %>
+  <p class="empty-hint">No announcements yet.</p>
+<% } else { %>
+  <% announcements.forEach(function(a) { %>
+    <div class="panel" style="<%= a.isActive ? 'border-left:4px solid var(--gold);' : '' %>">
+      <div class="panel-header">
+        <div>
+          <h2 style="margin-bottom:2px;"><%= a.title %></h2>
+          <p class="hint">
+            <%= new Date(a.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }) %>
+            &middot; <span class="badge <%= a.isActive ? 'badge-paid' : 'badge-failed' %>"><%= a.isActive ? 'Visible' : 'Hidden' %></span>
+          </p>
+        </div>
+        <div class="action-row">
+          <form method="POST" action="/admin/announcements/<%= a._id %>/toggle-active" class="inline-form">
+            <button type="submit" class="btn btn-outline btn-sm"><%= a.isActive ? 'Hide from site' : 'Show on site' %></button>
+          </form>
+          <form method="POST" action="/admin/announcements/<%= a._id %>/delete" class="inline-form" data-confirm="Delete the announcement '<%= a.title %>'?">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </div>
+      </div>
+      <% if (a.message) { %><p style="white-space:pre-line;"><%= a.message %></p><% } %>
+      <details>
+        <summary class="btn btn-outline btn-sm" style="cursor:pointer;">Edit</summary>
+        <form method="POST" action="/admin/announcements/<%= a._id %>/edit" style="margin-top:14px;">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" name="title" value="<%= a.title %>" required maxlength="120">
+            </div>
+            <div class="form-group">
+              <label>Order</label>
+              <input type="number" name="order" value="<%= a.order %>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Details</label>
+            <textarea name="message" rows="3"><%= a.message %></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+        </form>
+      </details>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/_admin-layout-bottom') %>

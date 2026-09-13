@@ -1,0 +1,97 @@
+<%- include('../partials/_admin-layout-top') %>
+
+<h1>Upcoming Programs</h1>
+<p class="hint" style="margin-top:-8px;">Pujas, festivals and community events. Anything happening within the next 10 days is automatically highlighted on the homepage.</p>
+
+<div class="panel">
+  <h2>Add a Program</h2>
+  <form method="POST" action="/admin/programs/add" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="title">Program Name</label>
+        <input type="text" id="title" name="title" placeholder="e.g. Monthly Satyanarayana Vratam" required>
+      </div>
+      <div class="form-group">
+        <label for="dateTime">Date &amp; Time (IST)</label>
+        <input type="datetime-local" id="dateTime" name="dateTime" required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="location">Location (optional)</label>
+        <input type="text" id="location" name="location" placeholder="Main Hall, Temple Premises...">
+      </div>
+      <div class="form-group">
+        <label for="order">Display Order</label>
+        <input type="number" id="order" name="order" value="0">
+        <p class="hint">Lower numbers appear first when dates are the same.</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="description">Description (optional)</label>
+      <textarea id="description" name="description" rows="3" placeholder="Any details devotees should know..."></textarea>
+    </div>
+    <div class="form-group">
+      <label for="image">Poster / Photo (optional)</label>
+      <input type="file" id="image" name="image" accept="image/*">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Program</button>
+  </form>
+</div>
+
+<% if (!programs.length) { %>
+  <p class="empty-hint">No programs added yet.</p>
+<% } else { %>
+  <div class="thumb-grid">
+    <% programs.forEach(function(p) { %>
+      <div class="thumb-card">
+        <img src="<%= p.imageUrl || '/images/placeholders/gallery-diya.svg' %>" alt="<%= p.title %>">
+        <div class="thumb-body">
+          <p style="font-weight:700; color:var(--ink); margin-bottom:2px;"><%= p.title %></p>
+          <p><%= new Date(p.dateTime).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }) %></p>
+          <p>
+            <span class="badge <%= p.isActive ? 'badge-paid' : 'badge-failed' %>"><%= p.isActive ? 'Visible' : 'Hidden' %></span>
+          </p>
+          <details>
+            <summary class="btn btn-outline btn-sm" style="cursor:pointer; margin-bottom:10px;">Edit</summary>
+            <form method="POST" action="/admin/programs/<%= p._id %>/edit" enctype="multipart/form-data" style="margin-top:10px;">
+              <div class="form-group">
+                <label>Program Name</label>
+                <input type="text" name="title" value="<%= p.title %>" required>
+              </div>
+              <div class="form-group">
+                <label>Date &amp; Time (IST)</label>
+                <input type="datetime-local" name="dateTime" value="<%= toISTDatetimeLocal(p.dateTime) %>" required>
+              </div>
+              <div class="form-group">
+                <label>Location</label>
+                <input type="text" name="location" value="<%= p.location %>">
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="3"><%= p.description %></textarea>
+              </div>
+              <div class="form-group">
+                <label>Order</label>
+                <input type="number" name="order" value="<%= p.order %>">
+              </div>
+              <div class="form-group">
+                <label>Replace Photo</label>
+                <input type="file" name="image" accept="image/*">
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm btn-block">Save Changes</button>
+            </form>
+          </details>
+          <form method="POST" action="/admin/programs/<%= p._id %>/toggle-active" style="margin-bottom:8px;">
+            <button type="submit" class="btn btn-outline btn-sm btn-block"><%= p.isActive ? 'Hide from site' : 'Show on site' %></button>
+          </form>
+          <form method="POST" action="/admin/programs/<%= p._id %>/delete" data-confirm="Delete the program '<%= p.title %>'?">
+            <button type="submit" class="btn btn-danger btn-sm btn-block">Delete</button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<%- include('../partials/_admin-layout-bottom') %>

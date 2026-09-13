@@ -1,0 +1,34 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container" style="max-width:800px;">
+    <h1>Terms &amp; Conditions</h1>
+    <p class="muted">Last updated: <%= new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long' }) %></p>
+
+    <h3>1. About This Website</h3>
+    <p>This website is operated by <%= settings.templeName %> to share information about the temple, its history, activities and committee, and to enable devotees to make voluntary donations online or via bank transfer/UPI.</p>
+
+    <h3>2. Use of This Site</h3>
+    <p>You agree to use this website only for lawful purposes and in a manner that does not infringe the rights of, or restrict or inhibit the use of this site by, any third party. Content on this site (text, photographs, logo) belongs to <%= settings.templeName %> unless otherwise noted, and may not be reproduced commercially without permission.</p>
+
+    <h3>3. Donations</h3>
+    <p>All donations made through this website are voluntary contributions towards the activities of <%= settings.templeName %>. By proceeding with a donation, you confirm that the funds being used are lawfully yours to donate. Please see our <a href="/refund-policy">Refund &amp; Cancellation Policy</a> for details on how payment issues are handled.</p>
+
+    <h3>4. Accuracy of Information</h3>
+    <p>We aim to keep information on this site (temple details, committee, event dates) accurate and up to date, but we do not guarantee that all content is free of errors at all times. Please contact us to confirm details for time-sensitive events.</p>
+
+    <h3>5. Third-Party Services</h3>
+    <p>Online payments are processed by Razorpay, a third-party payment gateway. Your use of their payment service is also subject to Razorpay's own terms of service.</p>
+
+    <h3>6. Limitation of Liability</h3>
+    <p><%= settings.templeName %> shall not be held liable for any indirect or consequential loss arising from the use of this website, to the fullest extent permitted by law.</p>
+
+    <h3>7. Governing Law</h3>
+    <p>These terms are governed by the laws of India.</p>
+
+    <h3>8. Contact</h3>
+    <p>Questions about these terms can be sent to <a href="mailto:<%= settings.email %>"><%= settings.email %></a>.</p>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>

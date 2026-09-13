@@ -1,0 +1,35 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Join Us</span>
+      <h2>Upcoming Programs</h2>
+      <div class="divider-motif">&#128330;</div>
+      <p>Pujas, festivals and community events at <%= settings.templeName %>.</p>
+    </div>
+
+    <% if (!programs.length) { %>
+      <div class="empty-state"><p>No upcoming programs listed right now — please check back soon.</p></div>
+    <% } else { %>
+      <ul class="timeline">
+        <% programs.forEach(function(p) { %>
+          <li>
+            <span class="year-badge" style="font-size:0.78rem; line-height:1.25;">
+              <%= new Date(p.dateTime).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' }) %><br>
+              <%= new Date(p.dateTime).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' }) %>
+            </span>
+            <% if (p.imageUrl) { %>
+              <img src="<%= p.imageUrl %>" alt="<%= p.title %>" style="max-width:220px; width:100%; border-radius:10px; margin-bottom:10px; display:block;">
+            <% } %>
+            <p style="margin:0 0 4px; font-weight:700; color:var(--ink); font-size:1.08rem;"><%= p.title %></p>
+            <% if (p.location) { %><p class="muted" style="margin:0 0 6px;">&#128205; <%= p.location %></p><% } %>
+            <% if (p.description) { %><p style="margin:0; white-space:pre-line;"><%= p.description %></p><% } %>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>

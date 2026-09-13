@@ -1,0 +1,167 @@
+<%- include('../partials/_admin-layout-top') %>
+
+<h1>Temple Settings</h1>
+<p class="hint" style="margin-bottom:20px;">Everything here updates the public website immediately after saving.</p>
+
+<form method="POST" action="/admin/settings" enctype="multipart/form-data">
+
+  <div class="panel">
+    <h2>General Information</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="templeName">Temple Name</label>
+        <input type="text" id="templeName" name="templeName" value="<%= settings.templeName %>" required>
+      </div>
+      <div class="form-group">
+        <label for="deityName">Deity Name</label>
+        <input type="text" id="deityName" name="deityName" value="<%= settings.deityName %>">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="tagline">Tagline</label>
+      <input type="text" id="tagline" name="tagline" value="<%= settings.tagline %>" maxlength="140">
+    </div>
+    <div class="form-group">
+      <label for="aboutShort">About / Homepage Description</label>
+      <textarea id="aboutShort" name="aboutShort" rows="4"><%= settings.aboutShort %></textarea>
+    </div>
+    <div class="form-group">
+      <label for="address">Address</label>
+      <textarea id="address" name="address" rows="2"><%= settings.address %></textarea>
+    </div>
+    <div class="form-group">
+      <label for="locationShort">Short Location (shown on the homepage banner)</label>
+      <input type="text" id="locationShort" name="locationShort" value="<%= settings.locationShort %>" placeholder="e.g. Gullapudi Village &bull; NTR District" maxlength="80">
+      <p class="hint">A short line shown under the temple name on the homepage photo. Leave blank to hide it.</p>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="text" id="phone" name="phone" value="<%= settings.phone %>">
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" value="<%= settings.email %>">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="whatsappNumber">WhatsApp Number</label>
+        <input type="text" id="whatsappNumber" name="whatsappNumber" value="<%= settings.whatsappNumber %>" placeholder="919000000000">
+        <p class="hint">Include country code, digits only (e.g. 91 for India). Powers the floating WhatsApp button.</p>
+      </div>
+      <div class="form-group">
+        <label for="mapEmbedUrl">Google Maps Embed URL (optional)</label>
+        <input type="text" id="mapEmbedUrl" name="mapEmbedUrl" value="<%= settings.mapEmbedUrl %>" placeholder="https://www.google.com/maps/embed?...">
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Donation Goal</h2>
+    <div class="form-group">
+      <label for="donationTargetAmount">Target Amount (&#8377;)</label>
+      <input type="number" id="donationTargetAmount" name="donationTargetAmount" min="0" value="<%= settings.donationTargetAmount %>">
+      <p class="hint">Used to calculate the progress bar on the homepage and donate page.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Bank &amp; UPI Details</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="accountName">Account Name</label>
+        <input type="text" id="accountName" name="accountName" value="<%= settings.bankDetails.accountName %>">
+      </div>
+      <div class="form-group">
+        <label for="accountNumber">Account Number</label>
+        <input type="text" id="accountNumber" name="accountNumber" value="<%= settings.bankDetails.accountNumber %>">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="ifsc">IFSC Code</label>
+        <input type="text" id="ifsc" name="ifsc" value="<%= settings.bankDetails.ifsc %>">
+      </div>
+      <div class="form-group">
+        <label for="bankName">Bank Name</label>
+        <input type="text" id="bankName" name="bankName" value="<%= settings.bankDetails.bankName %>">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="branch">Branch</label>
+        <input type="text" id="branch" name="branch" value="<%= settings.bankDetails.branch %>">
+      </div>
+      <div class="form-group">
+        <label for="upiId">UPI ID</label>
+        <input type="text" id="upiId" name="upiId" value="<%= settings.upiId %>" placeholder="yourtemple@upi">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="upiQrImage">UPI QR Code Image</label>
+      <img data-preview-for="upiQrImage" src="<%= settings.upiQrImageUrl || '/images/placeholders/upi-qr-placeholder.svg' %>" alt="" style="width:100px;height:100px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">
+      <input type="file" id="upiQrImage" name="upiQrImage" accept="image/*">
+    </div>
+    <div class="form-group">
+      <label for="taxInfo">Tax Exemption / Trust Registration Info (optional)</label>
+      <textarea id="taxInfo" name="taxInfo" rows="2" placeholder="e.g. Donations eligible under Section 80G. PAN: ..."><%= settings.taxInfo %></textarea>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Festival Countdown</h2>
+    <div class="form-group checkbox-row">
+      <input type="checkbox" id="festivalEnabled" name="festivalEnabled" <%= settings.festival.enabled ? 'checked' : '' %>>
+      <label for="festivalEnabled">Show countdown timer on homepage</label>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="festivalName">Festival Name</label>
+        <input type="text" id="festivalName" name="festivalName" value="<%= settings.festival.name %>">
+      </div>
+      <div class="form-group">
+        <label for="festivalDateTime">Festival Date &amp; Time (IST)</label>
+        <input type="datetime-local" id="festivalDateTime" name="festivalDateTime" value="<%= toISTDatetimeLocal(settings.festival.dateTime) %>">
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Social Links (optional)</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="facebook">Facebook URL</label>
+        <input type="text" id="facebook" name="facebook" value="<%= settings.socialLinks.facebook %>">
+      </div>
+      <div class="form-group">
+        <label for="instagram">Instagram URL</label>
+        <input type="text" id="instagram" name="instagram" value="<%= settings.socialLinks.instagram %>">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="youtube">YouTube URL</label>
+      <input type="text" id="youtube" name="youtube" value="<%= settings.socialLinks.youtube %>">
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Branding</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="logo">Logo</label>
+        <img data-preview-for="logo" src="<%= settings.logoUrl || '/images/placeholders/logo-placeholder.svg' %>" alt="" style="width:70px;height:70px;object-fit:cover;border-radius:50%;margin-bottom:8px;display:block;">
+        <input type="file" id="logo" name="logo" accept="image/*">
+      </div>
+      <div class="form-group">
+        <label for="heroImage">Homepage Hero Background</label>
+        <img data-preview-for="heroImage" src="<%= settings.heroImageUrl || '/images/placeholders/hero-placeholder.svg' %>" alt="" style="width:100%;max-width:220px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">
+        <input type="file" id="heroImage" name="heroImage" accept="image/*">
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Save Settings</button>
+</form>
+
+<%- include('../partials/_admin-layout-bottom') %>

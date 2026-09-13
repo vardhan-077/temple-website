@@ -1,0 +1,82 @@
+<%- include('../partials/_admin-layout-top') %>
+
+<h1>Temple Committee</h1>
+
+<div class="panel">
+  <h2>Add a Committee Member</h2>
+  <form method="POST" action="/admin/committee/add" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="role">Role</label>
+        <input type="text" id="role" name="role" placeholder="President, Secretary, Treasurer..." required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="phone">Phone (optional)</label>
+        <input type="text" id="phone" name="phone">
+      </div>
+      <div class="form-group">
+        <label for="order">Display Order</label>
+        <input type="number" id="order" name="order" value="0">
+        <p class="hint">Lower numbers appear first.</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="photo">Photo (optional)</label>
+      <input type="file" id="photo" name="photo" accept="image/*">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Member</button>
+  </form>
+</div>
+
+<% if (!members.length) { %>
+  <p class="empty-hint">No committee members added yet.</p>
+<% } else { %>
+  <div class="thumb-grid">
+    <% members.forEach(function(m) { %>
+      <div class="thumb-card">
+        <img src="<%= m.photoUrl || '/images/placeholders/avatar-placeholder.svg' %>" alt="<%= m.name %>">
+        <div class="thumb-body">
+          <p style="font-weight:700; color:var(--ink); margin-bottom:2px;"><%= m.name %></p>
+          <p><%= m.role %></p>
+          <details>
+            <summary class="btn btn-outline btn-sm" style="cursor:pointer; margin-bottom:10px;">Edit</summary>
+            <form method="POST" action="/admin/committee/<%= m._id %>/edit" enctype="multipart/form-data" style="margin-top:10px;">
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" value="<%= m.name %>" required>
+              </div>
+              <div class="form-group">
+                <label>Role</label>
+                <input type="text" name="role" value="<%= m.role %>" required>
+              </div>
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="text" name="phone" value="<%= m.phone %>">
+              </div>
+              <div class="form-group">
+                <label>Order</label>
+                <input type="number" name="order" value="<%= m.order %>">
+              </div>
+              <div class="form-group">
+                <label>Replace Photo</label>
+                <input type="file" name="photo" accept="image/*">
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm btn-block">Save Changes</button>
+            </form>
+          </details>
+          <form method="POST" action="/admin/committee/<%= m._id %>/delete" data-confirm="Remove <%= m.name %> from the committee list?">
+            <button type="submit" class="btn btn-danger btn-sm btn-block">Delete</button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<%- include('../partials/_admin-layout-bottom') %>

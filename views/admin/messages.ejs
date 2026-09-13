@@ -1,0 +1,35 @@
+<%- include('../partials/_admin-layout-top') %>
+
+<h1>Contact Messages</h1>
+
+<% if (!messages.length) { %>
+  <p class="empty-hint">No messages yet.</p>
+<% } else { %>
+  <% messages.forEach(function(msg) { %>
+    <div class="panel" style="<%= msg.status === 'new' ? 'border-left:4px solid var(--gold);' : '' %>">
+      <div class="panel-header">
+        <div>
+          <h2 style="margin-bottom:2px;"><%= msg.name %> <% if (msg.status === 'new') { %><span class="badge badge-created">new</span><% } %></h2>
+          <p class="hint">
+            <%= new Date(msg.createdAt).toLocaleString('en-IN') %>
+            <% if (msg.email) { %> &middot; <a href="mailto:<%= msg.email %>"><%= msg.email %></a><% } %>
+            <% if (msg.phone) { %> &middot; <a href="tel:<%= msg.phone.replace(/\s+/g,'') %>"><%= msg.phone %></a><% } %>
+          </p>
+        </div>
+        <div class="action-row">
+          <% if (msg.status === 'new') { %>
+          <form method="POST" action="/admin/messages/<%= msg._id %>/mark-read" class="inline-form">
+            <button type="submit" class="btn btn-outline btn-sm">Mark as Read</button>
+          </form>
+          <% } %>
+          <form method="POST" action="/admin/messages/<%= msg._id %>/delete" class="inline-form" data-confirm="Delete this message?">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </div>
+      </div>
+      <p style="white-space:pre-line;"><%= msg.message %></p>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/_admin-layout-bottom') %>

@@ -1,0 +1,87 @@
+<%- include('../partials/_admin-layout-top') %>
+
+<h1>Temple History</h1>
+
+<div class="panel">
+  <h2>Story / Introduction</h2>
+  <form method="POST" action="/admin/history">
+    <div class="form-group">
+      <label for="intro">Tell visitors about your temple's origins, deity and significance</label>
+      <textarea id="intro" name="intro" rows="8"><%= history.intro %></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Story</button>
+  </form>
+</div>
+
+<div class="panel">
+  <h2>Add a Milestone</h2>
+  <p class="hint" style="margin-top:-6px;">Attach an old photo alongside the description if you have one — it'll show in the timeline on the public History page.</p>
+  <form method="POST" action="/admin/history/milestones/add" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="milestoneYear">Year</label>
+        <input type="number" id="milestoneYear" name="year" required>
+      </div>
+      <div class="form-group">
+        <label for="milestoneImage">Historical Photo (optional)</label>
+        <input type="file" id="milestoneImage" name="image" accept="image/*">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="milestoneDescription">Description</label>
+      <textarea id="milestoneDescription" name="description" rows="3" maxlength="300" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Milestone</button>
+  </form>
+</div>
+
+<h2 style="margin:28px 0 16px;">Timeline / Milestones</h2>
+<% if (!history.milestones.length) { %>
+  <p class="empty-hint">No milestones added yet.</p>
+<% } else { %>
+  <% [...history.milestones].sort((a,b) => a.year - b.year).forEach(function(m) { %>
+    <div class="panel">
+      <div class="panel-header">
+        <h2 style="margin-bottom:0;"><%= m.year %></h2>
+        <div class="action-row">
+          <% if (m.imageUrl) { %>
+            <form method="POST" action="/admin/history/milestones/<%= m._id %>/remove-photo" class="inline-form" data-confirm="Remove this milestone's photo? The milestone text will stay.">
+              <button type="submit" class="btn btn-outline btn-sm">Remove Photo</button>
+            </form>
+          <% } %>
+          <form method="POST" action="/admin/history/milestones/<%= m._id %>/delete" class="inline-form" data-confirm="Delete this milestone entirely?">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </div>
+      </div>
+      <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; margin-bottom:14px;">
+        <% if (m.imageUrl) { %>
+          <img src="<%= m.imageUrl %>" alt="<%= m.year %>" style="width:160px; height:120px; object-fit:cover; border-radius:8px; flex-shrink:0; border:1px solid var(--cream-dark);">
+        <% } %>
+        <p style="flex:1; min-width:200px; margin:0; white-space:pre-line;"><%= m.description %></p>
+      </div>
+      <details>
+        <summary class="btn btn-outline btn-sm" style="cursor:pointer;">Edit</summary>
+        <form method="POST" action="/admin/history/milestones/<%= m._id %>/edit" enctype="multipart/form-data" style="margin-top:14px;">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Year</label>
+              <input type="number" name="year" value="<%= m.year %>" required>
+            </div>
+            <div class="form-group">
+              <label><%= m.imageUrl ? 'Replace Photo' : 'Add Photo' %></label>
+              <input type="file" name="image" accept="image/*">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" rows="3" required><%= m.description %></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+        </form>
+      </details>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/_admin-layout-bottom') %>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Sample temple gallery photo placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4a0d0d"/>
+      <stop offset="100%" stop-color="#6e1414"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="45%">
+      <stop offset="0%" stop-color="#f5deA0" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#f5deA0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect width="800" height="600" fill="url(#glow)"/>
+  <rect x="24" y="24" width="752" height="552" fill="none" stroke="#e8c368" stroke-width="3" rx="10"/>
+  <rect x="34" y="34" width="732" height="532" fill="none" stroke="#e8c368" stroke-width="1" rx="6" opacity="0.6"/>
+  <!-- corner flourishes -->
+  <g transform="translate(24 24) rotate(0)">
+      <path d="M0 0 h34 M0 0 v34" stroke="#e8c368" stroke-width="3" fill="none"/>
+      <circle cx="10" cy="10" r="3.5" fill="#e8c368"/>
+    </g>
+  <g transform="translate(776 24) rotate(90)">
+      <path d="M0 0 h34 M0 0 v34" stroke="#e8c368" stroke-width="3" fill="none"/>
+      <circle cx="10" cy="10" r="3.5" fill="#e8c368"/>
+    </g>
+  <g transform="translate(776 576) rotate(180)">
+      <path d="M0 0 h34 M0 0 v34" stroke="#e8c368" stroke-width="3" fill="none"/>
+      <circle cx="10" cy="10" r="3.5" fill="#e8c368"/>
+    </g>
+  <g transform="translate(24 576) rotate(270)">
+      <path d="M0 0 h34 M0 0 v34" stroke="#e8c368" stroke-width="3" fill="none"/>
+      <circle cx="10" cy="10" r="3.5" fill="#e8c368"/>
+    </g>
+  <text x="400" y="320" font-size="180" text-anchor="middle" dominant-baseline="middle">🪔</text>
+  <text x="400" y="500" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="#fff8ec" text-anchor="middle" opacity="0.85">Sample photo &#8212; replace anytime from Admin &#8594; Gallery</text>
+</svg>

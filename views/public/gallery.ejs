@@ -1,0 +1,39 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Moments</span>
+      <h2>Photo Gallery</h2>
+      <div class="divider-motif">&#127917;</div>
+      <p>Browse photos from our festivals, rituals and events by year.</p>
+    </div>
+
+    <% if (!years.length) { %>
+      <div class="empty-state">
+        <p>No photos have been added yet. Please check back soon.</p>
+      </div>
+    <% } else { %>
+      <div class="year-tabs">
+        <% years.forEach(function(y) { %>
+          <a href="/gallery?year=<%= y %>" class="<%= y === selectedYear ? 'active' : '' %>"><%= y %></a>
+        <% }) %>
+      </div>
+
+      <% if (!images.length) { %>
+        <div class="empty-state"><p>No photos for <%= selectedYear %> yet.</p></div>
+      <% } else { %>
+        <div class="gallery-grid">
+          <% images.forEach(function(img) { %>
+            <div class="gallery-item" data-full="<%= img.imageUrl %>" data-caption="<%= img.caption %>">
+              <img src="<%= img.imageUrl %>" alt="<%= img.caption || (settings.templeName + ' photo, ' + img.year) %>" loading="lazy">
+              <% if (img.caption) { %><span class="caption"><%= img.caption %></span><% } %>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>

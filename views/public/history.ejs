@@ -1,0 +1,29 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Our Journey</span>
+      <h2>Temple History</h2>
+      <div class="divider-motif">&#128330;</div>
+    </div>
+
+    <p style="max-width:760px;margin:0 auto 46px;white-space:pre-line;"><%= history.intro %></p>
+
+    <% if (milestones.length) { %>
+    <ul class="timeline">
+      <% milestones.forEach(function(m) { %>
+        <li>
+          <span class="year-badge"><%= m.year %></span>
+          <% if (m.imageUrl) { %>
+            <img src="<%= m.imageUrl %>" alt="<%= m.year %>" class="timeline-photo">
+          <% } %>
+          <p style="margin:0;"><%= m.description %></p>
+        </li>
+      <% }) %>
+    </ul>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>

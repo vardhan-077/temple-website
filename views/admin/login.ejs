@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | <%= settings.templeName %></title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="<%= settings.logoUrl || '/images/placeholders/logo-placeholder.svg' %>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+    <img src="<%= settings.logoUrl || '/images/placeholders/logo-placeholder.svg' %>" alt="">
+    <h1><%= settings.templeName %></h1>
+    <p class="hint">Admin Panel Login</p>
+
+    <% flashError.forEach(function(m) { %><div class="alert alert-error"><%= m %></div><% }) %>
+    <% flashSuccess.forEach(function(m) { %><div class="alert alert-success"><%= m %></div><% }) %>
+
+    <form method="POST" action="/admin/login">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autofocus autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Log In</button>
+    </form>
+    <p class="hint" style="margin-top:18px; text-align:center;"><a href="/">&larr; Back to website</a></p>
+  </div>
+</div>
+</body>
+</html>

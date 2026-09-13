@@ -1,0 +1,31 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Seva &amp; Service</span>
+      <h2>Temple Committee</h2>
+      <div class="divider-motif">&#128330;</div>
+      <p>The dedicated devotees who manage the temple's daily activities, festivals and community service.</p>
+    </div>
+
+    <% if (!members.length) { %>
+      <div class="empty-state"><p>Committee details will be added soon.</p></div>
+    <% } else { %>
+      <div class="grid grid-4">
+        <% members.forEach(function(m) { %>
+          <div class="card text-center">
+            <img src="<%= m.photoUrl || '/images/placeholders/avatar-placeholder.svg' %>" alt="<%= m.name %>" style="aspect-ratio:1/1; object-fit:cover; width:100%;">
+            <div class="card-body">
+              <h3 style="margin-bottom:4px;"><%= m.name %></h3>
+              <span class="tag"><%= m.role %></span>
+              <% if (m.phone) { %><p class="muted" style="margin-top:10px;"><a href="tel:<%= m.phone.replace(/\s+/g,'') %>"><%= m.phone %></a></p><% } %>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>

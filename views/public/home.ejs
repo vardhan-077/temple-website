@@ -1,0 +1,184 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="hero">
+  <div class="hero-bg-zoom" style="background-image: url('<%= settings.heroImageUrl || '/images/placeholders/hero-placeholder.svg' %>');"></div>
+  <div class="hero-inner">
+    <h1><%= settings.templeName %></h1>
+    <% if (settings.tagline) { %><p class="lead"><%= settings.tagline %></p><% } %>
+    <% if (settings.locationShort) { %><p class="hero-location">&#128205; <%= settings.locationShort %></p><% } %>
+    <div class="hero-divider"><span></span><span class="hero-divider-dot"></span><span></span></div>
+    <div class="hero-actions">
+      <a href="/donate" class="btn btn-primary">Donate Now</a>
+      <a href="/gallery" class="btn btn-outline">View Gallery</a>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="progress-card">
+    <div class="figures">
+      <span class="raised" data-raised-amount>&#8377;<%= donation.total.toLocaleString('en-IN') %> raised</span>
+      <span class="target">of &#8377;<%= donation.target.toLocaleString('en-IN') %> goal</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" data-progress-fill style="width: <%= donation.percent %>%;"></div>
+    </div>
+    <div class="progress-meta">
+      <span><strong data-raised-percent><%= donation.percent %>%</strong> funded</span>
+      <span><strong data-donor-count><%= donation.count %></strong> donors so far</span>
+      <a href="/donate" class="btn btn-maroon btn-sm">Contribute</a>
+    </div>
+  </div>
+</div>
+
+<% if (announcements && announcements.length) { %>
+<section class="section announcements-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Stay Informed</span>
+      <h2>&#128226; Latest Announcements</h2>
+      <div class="divider-motif">&#10022;</div>
+    </div>
+    <div class="announcement-list">
+      <% announcements.forEach(function(a) {
+           var isLong = a.message && a.message.length > 130;
+           var preview = isLong ? a.message.slice(0, 130).trim() + '…' : a.message;
+      %>
+        <div class="announcement-card">
+          <div class="announcement-head">
+            <span class="announcement-dot" aria-hidden="true"></span>
+            <span class="announcement-title"><%= a.title %></span>
+          </div>
+          <% if (a.message) { %>
+            <p class="announcement-preview"><%= preview %></p>
+            <% if (isLong) { %>
+              <p class="announcement-full" hidden><%= a.message %></p>
+              <button type="button" class="announcement-toggle-link" data-more="Read more" data-less="Show less">Read more <span class="chev">&#9662;</span></button>
+            <% } %>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<% if (upcomingPrograms && upcomingPrograms.length) { %>
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Happening Soon</span>
+      <h2>Programs in the Next 10 Days</h2>
+      <div class="divider-motif">&#128330;</div>
+    </div>
+    <div class="grid grid-3">
+      <% upcomingPrograms.forEach(function(p) { %>
+        <div class="card">
+          <img src="<%= p.imageUrl || '/images/placeholders/gallery-diya.svg' %>" alt="<%= p.title %>" style="aspect-ratio:16/10; object-fit:cover; width:100%;">
+          <div class="card-body">
+            <span class="tag"><%= new Date(p.dateTime).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' }) %></span>
+            <h3 style="margin:8px 0 4px;"><%= p.title %></h3>
+            <% if (p.location) { %><p class="muted" style="margin:0;">&#128205; <%= p.location %></p><% } %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <p class="text-center" style="margin-top:24px;"><a href="/programs" class="btn btn-outline" style="border-color:var(--maroon); color:var(--maroon);">View All Programs &rarr;</a></p>
+  </div>
+</section>
+<% } %>
+
+<% if (settings.festival && settings.festival.enabled) { %>
+<section class="section">
+  <div class="container">
+    <div class="leaderboard-card countdown-card" id="countdown"
+         data-target="<%= new Date(settings.festival.dateTime).toISOString() %>"
+         data-done-message="&#127881; <%= settings.festival.name %> is here! Join us for the celebrations.">
+      <p class="countdown-name">Counting down to <strong><%= settings.festival.name %></strong></p>
+      <div class="countdown-grid">
+        <div class="countdown-unit"><span class="num" data-unit="days">--</span><span class="label">Days</span></div>
+        <div class="countdown-unit"><span class="num" data-unit="hours">--</span><span class="label">Hours</span></div>
+        <div class="countdown-unit"><span class="num" data-unit="minutes">--</span><span class="label">Minutes</span></div>
+        <div class="countdown-unit"><span class="num" data-unit="seconds">--</span><span class="label">Seconds</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Our Story</span>
+      <h2>About <%= settings.templeName %></h2>
+      <div class="divider-motif">&#128157;</div>
+    </div>
+    <p class="text-center" style="max-width:760px;margin:0 auto 20px;"><%= settings.aboutShort %></p>
+    <p class="text-center"><a href="/history" class="btn btn-outline" style="border-color:var(--maroon); color:var(--maroon);">Read Full History &rarr;</a></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid-2">
+      <div>
+        <div class="section-header" style="text-align:left; margin-bottom:20px;">
+          <span class="eyebrow">Top Donors</span>
+          <h2>Live Donation Leaderboard</h2>
+        </div>
+        <div class="leaderboard-card">
+          <ul class="leaderboard-list" id="leaderboardList">
+            <% if (!leaderboard.length) { %>
+              <li class="leaderboard-empty">Be the first to donate today!</li>
+            <% } else { %>
+              <% leaderboard.forEach(function(d, i) { %>
+              <li>
+                <span class="leaderboard-rank"><%= i + 1 %></span>
+                <span class="leaderboard-name"><%= d.isAnonymous ? 'Anonymous Devotee' : d.name %></span>
+                <span class="leaderboard-amount">&#8377;<%= d.amount.toLocaleString('en-IN') %></span>
+              </li>
+              <% }) %>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="section-header" style="text-align:left; margin-bottom:20px;">
+          <span class="eyebrow">Prefer Bank Transfer?</span>
+          <h2>Bank &amp; UPI Details</h2>
+        </div>
+        <div class="card pay-details">
+          <div class="card-body">
+            <dl>
+              <dt>Account Name</dt><dd><%= settings.bankDetails.accountName %></dd>
+              <dt>Account Number</dt><dd><%= settings.bankDetails.accountNumber %></dd>
+              <dt>IFSC</dt><dd><%= settings.bankDetails.ifsc %></dd>
+              <dt>Bank &amp; Branch</dt><dd><%= settings.bankDetails.bankName %>, <%= settings.bankDetails.branch %></dd>
+              <dt>UPI ID</dt>
+              <dd>
+                <div class="copy-row">
+                  <span><%= settings.upiId %></span>
+                  <button class="copy-btn" data-copy-text="<%= settings.upiId %>">Copy</button>
+                </div>
+              </dd>
+            </dl>
+            <p style="margin-top:14px;"><a href="/donate#bank-transfer" class="btn btn-maroon btn-sm">View QR &amp; Full Details</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Our Committee</span>
+      <h2>Meet the People Behind the Temple</h2>
+      <div class="divider-motif">&#128330;</div>
+    </div>
+    <p class="text-center"><a href="/committee" class="btn btn-outline" style="border-color:var(--maroon); color:var(--maroon);">View Full Committee &rarr;</a></p>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>

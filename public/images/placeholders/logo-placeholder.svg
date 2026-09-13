@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Temple logo placeholder">
+  <defs>
+    <linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7a1414"/>
+      <stop offset="100%" stop-color="#4a0d0d"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="57" fill="url(#lbg)" stroke="#e8c368" stroke-width="3"/>
+  <circle cx="60" cy="60" r="47" fill="none" stroke="#e8c368" stroke-width="1" opacity="0.7"/>
+  <text x="60" y="66" font-size="52" text-anchor="middle" dominant-baseline="middle">🕉️</text>
+</svg>

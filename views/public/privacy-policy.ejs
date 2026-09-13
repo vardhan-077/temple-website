@@ -1,0 +1,31 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container" style="max-width:800px;">
+    <h1>Privacy Policy</h1>
+    <p class="muted">Last updated: <%= new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long' }) %></p>
+
+    <h3>1. Information We Collect</h3>
+    <p>When you make a donation, contact us, or use this website, we may collect: your name, email address, phone number, donation amount, and any message you choose to share. Payment details (card, UPI, netbanking information) are collected and processed directly by our payment partner, Razorpay, and are never stored on our servers.</p>
+
+    <h3>2. How We Use Your Information</h3>
+    <p>We use the information you provide to: process and record your donation, send you a receipt or acknowledgement, display your name and donation amount on our public donor leaderboard (unless you choose to donate anonymously), and respond to messages sent through our Contact page. We do not sell, rent, or trade your personal information to third parties.</p>
+
+    <h3>3. Payment Processing</h3>
+    <p>All online payments are processed through Razorpay, a licensed payment aggregator. Your payment information is subject to Razorpay's own privacy policy and security practices. We only receive confirmation of a successful payment and a payment reference ID.</p>
+
+    <h3>4. Anonymous Donations</h3>
+    <p>If you choose the "do not show my name" option while donating, your name will not appear on the public leaderboard. It will still be retained in our internal donation records for accounting and receipt purposes.</p>
+
+    <h3>5. Cookies</h3>
+    <p>This website uses a minimal session cookie only when an administrator logs into the admin panel, to keep them signed in. We do not use tracking or advertising cookies.</p>
+
+    <h3>6. Data Security</h3>
+    <p>We take reasonable technical measures to protect the information you share with us. However, no method of electronic storage or transmission is 100% secure.</p>
+
+    <h3>7. Contact Us</h3>
+    <p>If you have questions about this Privacy Policy or how your information is handled, please contact us at <a href="mailto:<%= settings.email %>"><%= settings.email %></a> or <%= settings.phone %>.</p>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>

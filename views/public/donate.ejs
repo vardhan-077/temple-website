@@ -1,0 +1,127 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Seva</span>
+      <h2>Support <%= settings.templeName %></h2>
+      <div class="divider-motif">&#128157;</div>
+      <p>Your contribution helps us continue daily rituals, festivals, maintenance and community service.</p>
+    </div>
+
+    <div class="progress-card" style="margin-top:0;">
+      <div class="figures">
+        <span class="raised" data-raised-amount>&#8377;<%= donation.total.toLocaleString('en-IN') %> raised</span>
+        <span class="target">of &#8377;<%= donation.target.toLocaleString('en-IN') %> goal</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" data-progress-fill style="width: <%= donation.percent %>%;"></div>
+      </div>
+      <div class="progress-meta">
+        <span><strong data-raised-percent><%= donation.percent %>%</strong> funded</span>
+        <span><strong data-donor-count><%= donation.count %></strong> donors so far</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:10px;">
+  <div class="container" style="max-width:760px;">
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="online" type="button">Pay Online</button>
+      <button class="tab-btn" data-tab="bank-transfer" type="button">Bank Transfer / UPI</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-online">
+      <div class="card">
+        <div class="card-body">
+          <div id="donationError" class="alert alert-error" hidden></div>
+
+          <% if (!razorpayEnabled) { %>
+            <div class="alert alert-error">Online payments aren't set up on this site yet. Please use the Bank Transfer / UPI tab instead.</div>
+          <% } %>
+
+          <form id="donationForm" data-razorpay-enabled="<%= razorpayEnabled %>">
+            <label>Choose an amount</label>
+            <div class="amount-presets">
+              <button type="button" class="amount-chip" data-amount="101">&#8377;101</button>
+              <button type="button" class="amount-chip" data-amount="501">&#8377;501</button>
+              <button type="button" class="amount-chip selected" data-amount="1001">&#8377;1001</button>
+              <button type="button" class="amount-chip" data-amount="2100">&#8377;2100</button>
+              <button type="button" class="amount-chip" data-amount="5000">&#8377;5000</button>
+            </div>
+            <div class="form-group">
+              <label for="amountInput">Or enter a custom amount (&#8377;)</label>
+              <input type="number" id="amountInput" min="1" max="500000" value="1001" required>
+            </div>
+            <div class="form-group">
+              <label for="nameInput">Your Name</label>
+              <input type="text" id="nameInput" maxlength="100" placeholder="Anonymous Devotee">
+            </div>
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="emailInput">Email (for receipt)</label>
+                <input type="email" id="emailInput" maxlength="200">
+              </div>
+              <div class="form-group">
+                <label for="phoneInput">Phone</label>
+                <input type="tel" id="phoneInput" maxlength="15">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="messageInput">Message / Prayer (optional)</label>
+              <textarea id="messageInput" maxlength="500" rows="2"></textarea>
+            </div>
+            <div class="form-group checkbox-row">
+              <input type="checkbox" id="anonInput">
+              <label for="anonInput">Do not show my name on the public leaderboard</label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="payBtn" <%= razorpayEnabled ? '' : 'disabled' %>>Proceed to Pay</button>
+            <p class="muted text-center" style="margin-top:14px; font-size:0.82rem;">&#128274; Payments are securely processed by Razorpay. We never see or store your card/bank details.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-bank-transfer">
+      <div class="grid grid-2" style="align-items:start;">
+        <div class="card pay-details">
+          <div class="card-body">
+            <h3>Bank Details</h3>
+            <dl>
+              <dt>Account Name</dt><dd><%= settings.bankDetails.accountName %></dd>
+              <dt>Account Number</dt>
+              <dd>
+                <div class="copy-row"><span><%= settings.bankDetails.accountNumber %></span>
+                  <button class="copy-btn" data-copy-text="<%= settings.bankDetails.accountNumber %>">Copy</button>
+                </div>
+              </dd>
+              <dt>IFSC Code</dt>
+              <dd>
+                <div class="copy-row"><span><%= settings.bankDetails.ifsc %></span>
+                  <button class="copy-btn" data-copy-text="<%= settings.bankDetails.ifsc %>">Copy</button>
+                </div>
+              </dd>
+              <dt>Bank &amp; Branch</dt><dd><%= settings.bankDetails.bankName %>, <%= settings.bankDetails.branch %></dd>
+            </dl>
+            <% if (settings.taxInfo) { %><p class="muted" style="margin-top:16px; font-size:0.85rem;"><%= settings.taxInfo %></p><% } %>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body qr-wrap">
+            <h3>Scan &amp; Pay via UPI</h3>
+            <img src="<%= settings.upiQrImageUrl || '/images/placeholders/upi-qr-placeholder.svg' %>" alt="UPI QR code">
+            <div class="copy-row" style="justify-content:center;">
+              <span><%= settings.upiId %></span>
+              <button class="copy-btn" data-copy-text="<%= settings.upiId %>">Copy UPI ID</button>
+            </div>
+            <p class="muted" style="margin-top:14px; font-size:0.85rem;">After transferring, please share a screenshot with us via WhatsApp or the Contact page so we can add you to the donor records.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<%- include('../partials/_layout-bottom') %>
