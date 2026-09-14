@@ -1,0 +1,102 @@
+<%- include('../partials/_admin-layout-top') %>
+
+<h1>Donors</h1>
+<p class="hint" style="margin-top:-8px;">An honor roll of everyone who contributed to the temple - founding/construction-time donors, major patrons, and special gifts like the idol or the idol's vastra (clothing). Grouped by category on the public page. This is separate from the online donation leaderboard, which tracks payments made through the Donate page.</p>
+
+<div class="panel">
+  <h2>Add a Donor</h2>
+  <form method="POST" action="/admin/donors/add">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="e.g. Sri Venkata Rao Garu" required maxlength="150">
+      </div>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" list="donorCategories" placeholder="e.g. Founding Donor, Idol Donor, Idol Vastra Donor" required maxlength="80">
+        <datalist id="donorCategories">
+          <option value="Founding Donor">
+          <option value="Idol Donor">
+          <option value="Idol Vastra Donor">
+          <option value="Major Contributor">
+          <option value="Well-Wisher">
+          <% categories.forEach(function(c) { %><option value="<%= c %>"><% }) %>
+        </datalist>
+        <p class="hint">Pick an existing category or type a new one - donors are grouped by this on the public page.</p>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="year">Year (optional)</label>
+        <input type="number" id="year" name="year" placeholder="e.g. 1985">
+      </div>
+      <div class="form-group">
+        <label for="order">Display Order</label>
+        <input type="number" id="order" name="order" value="0">
+        <p class="hint">Lower numbers appear first - controls both the donor's position and, for a new category, where that whole group appears.</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="note">Note (optional)</label>
+      <input type="text" id="note" name="note" placeholder="e.g. Donated the main sanctum idol" maxlength="200">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Donor</button>
+  </form>
+</div>
+
+<h2 style="margin:28px 0 16px;">All Donors</h2>
+<% if (!donors.length) { %>
+  <p class="empty-hint">No donors added yet.</p>
+<% } else { %>
+  <% donors.forEach(function(d) { %>
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <h2 style="margin-bottom:2px;"><%= d.name %></h2>
+          <p class="hint">
+            <span class="tag"><%= d.category %></span>
+            <% if (d.year) { %>&middot; <%= d.year %><% } %>
+          </p>
+        </div>
+        <div class="action-row">
+          <form method="POST" action="/admin/donors/<%= d._id %>/delete" class="inline-form" data-confirm="Remove '<%= d.name %>' from the donor list?">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </div>
+      </div>
+      <% if (d.note) { %><p><%= d.note %></p><% } %>
+      <details>
+        <summary class="btn btn-outline btn-sm" style="cursor:pointer;">Edit</summary>
+        <form method="POST" action="/admin/donors/<%= d._id %>/edit" style="margin-top:14px;">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" name="name" value="<%= d.name %>" required maxlength="150">
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <input type="text" name="category" list="donorCategories" value="<%= d.category %>" required maxlength="80">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Year</label>
+              <input type="number" name="year" value="<%= d.year || '' %>">
+            </div>
+            <div class="form-group">
+              <label>Order</label>
+              <input type="number" name="order" value="<%= d.order %>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Note</label>
+            <input type="text" name="note" value="<%= d.note %>" maxlength="200">
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+        </form>
+      </details>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/_admin-layout-bottom') %>
