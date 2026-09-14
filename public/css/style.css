@@ -23,8 +23,8 @@
   --radius-md: 14px;
   --radius-lg: 22px;
 
-  --font-display: 'Yatra One', 'Cochin', Georgia, serif;
-  --font-body: 'Mukta', 'Segoe UI', Tahoma, sans-serif;
+  --font-display: 'Cormorant Garamond', 'Cochin', Georgia, serif;
+  --font-body: 'Work Sans', 'Segoe UI', Tahoma, sans-serif;
 
   --header-height: 76px;
 }
@@ -60,14 +60,15 @@ a {
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   color: var(--maroon-dark);
-  line-height: 1.25;
+  line-height: 1.2;
   margin: 0 0 0.5em;
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
-h1 { font-size: clamp(2rem, 5vw, 3rem); }
-h2 { font-size: clamp(1.5rem, 3.4vw, 2.1rem); }
-h3 { font-size: 1.3rem; }
+h1 { font-size: clamp(2.1rem, 5vw, 3.3rem); font-weight: 600; }
+h2 { font-size: clamp(1.6rem, 3.4vw, 2.3rem); }
+h3 { font-size: 1.35rem; font-weight: 600; }
 
 p { margin: 0 0 1em; }
 
@@ -94,12 +95,13 @@ p { margin: 0 0 1em; }
 
 .section-header .eyebrow {
   display: inline-block;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
+  font-weight: 600;
   color: var(--gold);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-size: 0.85rem;
-  margin-bottom: 8px;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
 }
 
 .section-header p {
@@ -199,7 +201,8 @@ p { margin: 0 0 1em; }
 }
 .navbar-brand .name {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-weight: 600;
+  font-size: 1.2rem;
   color: var(--gold-light);
   white-space: nowrap;
   overflow: hidden;
@@ -408,6 +411,7 @@ p { margin: 0 0 1em; }
 }
 .progress-card .raised {
   font-family: var(--font-display);
+  font-weight: 600;
   font-size: 1.6rem;
   color: var(--maroon);
 }
@@ -445,6 +449,7 @@ p { margin: 0 0 1em; }
 }
 .countdown-name {
   font-family: var(--font-display);
+  font-weight: 600;
   color: var(--gold-light);
   font-size: 1.1rem;
   margin-bottom: 14px;
@@ -464,6 +469,7 @@ p { margin: 0 0 1em; }
 }
 .countdown-unit .num {
   font-family: var(--font-display);
+  font-weight: 700;
   font-size: 2rem;
   color: var(--gold-bright);
   display: block;
@@ -618,6 +624,7 @@ p { margin: 0 0 1em; }
 }
 .leaderboard-amount {
   font-family: var(--font-display);
+  font-weight: 600;
   color: var(--gold-light);
 }
 .leaderboard-empty {
@@ -791,6 +798,7 @@ p { margin: 0 0 1em; }
   text-align: right;
   padding-right: 24px;
   font-family: var(--font-display);
+  font-weight: 600;
   color: var(--maroon);
   font-size: 1.1rem;
 }
