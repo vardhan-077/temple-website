@@ -11,6 +11,7 @@ const Donation = require('../models/Donation');
 const ContactMessage = require('../models/ContactMessage');
 const Program = require('../models/Program');
 const Announcement = require('../models/Announcement');
+const Donor = require('../models/Donor');
 
 const { requireAdminAuth, redirectIfLoggedIn } = require('../middleware/auth');
 const { upload, saveImage, deleteImage } = require('../utils/imageUpload');
@@ -576,6 +577,80 @@ router.post(
       req.flash('success', 'Announcement deleted.');
     }
     res.redirect('/admin/announcements');
+  })
+);
+
+// ===================== Donors (honor roll) =====================
+
+router.get(
+  '/donors',
+  wrap(async (req, res) => {
+    const donors = await Donor.find().sort({ order: 1, createdAt: 1 }).lean();
+    const categories = [...new Set(donors.map((d) => d.category))];
+    res.render('admin/donors', {
+      pageTitle: 'Donors',
+      activeAdminNav: 'donors',
+      donors,
+      categories,
+    });
+  })
+);
+
+router.post(
+  '/donors/add',
+  wrap(async (req, res) => {
+    const name = (req.body.name || '').trim();
+    const category = (req.body.category || '').trim();
+    if (!name || !category) {
+      req.flash('error', 'Please enter both a name and a category.');
+      return res.redirect('/admin/donors');
+    }
+    await Donor.create({
+      name,
+      category,
+      note: (req.body.note || '').trim(),
+      year: req.body.year ? Number(req.body.year) : undefined,
+      order: Number(req.body.order) || 0,
+    });
+    req.flash('success', 'Donor added.');
+    res.redirect('/admin/donors');
+  })
+);
+
+router.post(
+  '/donors/:id/edit',
+  wrap(async (req, res) => {
+    const donor = await Donor.findById(req.params.id);
+    if (!donor) {
+      req.flash('error', 'Donor not found.');
+      return res.redirect('/admin/donors');
+    }
+    const name = (req.body.name || '').trim();
+    const category = (req.body.category || '').trim();
+    if (!name || !category) {
+      req.flash('error', 'Please enter both a name and a category.');
+      return res.redirect('/admin/donors');
+    }
+    donor.name = name;
+    donor.category = category;
+    donor.note = (req.body.note || '').trim();
+    donor.year = req.body.year ? Number(req.body.year) : undefined;
+    donor.order = Number(req.body.order) || 0;
+    await donor.save();
+    req.flash('success', 'Donor updated.');
+    res.redirect('/admin/donors');
+  })
+);
+
+router.post(
+  '/donors/:id/delete',
+  wrap(async (req, res) => {
+    const donor = await Donor.findById(req.params.id);
+    if (donor) {
+      await donor.deleteOne();
+      req.flash('success', 'Donor removed.');
+    }
+    res.redirect('/admin/donors');
   })
 );
 

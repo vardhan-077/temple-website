@@ -8,6 +8,7 @@ const Donation = require('../models/Donation');
 const ContactMessage = require('../models/ContactMessage');
 const Program = require('../models/Program');
 const Announcement = require('../models/Announcement');
+const Donor = require('../models/Donor');
 const razorpayUtil = require('../utils/razorpay');
 
 // GET /
@@ -97,6 +98,20 @@ router.get('/committee', async (req, res, next) => {
       pageTitle: 'Temple Committee',
       activeNav: 'committee',
       members,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /donors
+router.get('/donors', async (req, res, next) => {
+  try {
+    const donorGroups = await Donor.getGrouped();
+    res.render('public/donors', {
+      pageTitle: 'Our Benefactors',
+      activeNav: 'donors',
+      donorGroups,
     });
   } catch (err) {
     next(err);
