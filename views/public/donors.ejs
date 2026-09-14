@@ -1,0 +1,35 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">With Gratitude</span>
+      <h2>Our Benefactors</h2>
+      <div class="divider-motif">&#128330;</div>
+      <p>We remain deeply grateful to the devotees whose generosity built and sustains this temple - from its founding to every gift since.</p>
+    </div>
+
+    <% if (!donorGroups.length) { %>
+      <div class="empty-state"><p>Our donor list will be added soon.</p></div>
+    <% } else { %>
+      <% donorGroups.forEach(function(group) { %>
+        <div style="max-width:820px; margin:0 auto 48px;">
+          <h3 style="text-align:center; margin-bottom:20px;"><%= group.category %></h3>
+          <div class="grid grid-3">
+            <% group.donors.forEach(function(d) { %>
+              <div class="card text-center">
+                <div class="card-body">
+                  <h4 style="margin-bottom:4px; font-family:var(--font-display); font-weight:600; color:var(--maroon-dark);"><%= d.name %></h4>
+                  <% if (d.year) { %><span class="tag"><%= d.year %></span><% } %>
+                  <% if (d.note) { %><p class="muted" style="margin-top:10px; margin-bottom:0; font-size:0.9rem;"><%= d.note %></p><% } %>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>
