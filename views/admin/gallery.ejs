@@ -39,6 +39,25 @@
               <form method="POST" action="/admin/gallery/<%= img._id %>/delete" data-confirm="Delete this photo? This cannot be undone.">
                 <button type="submit" class="btn btn-danger btn-sm btn-block">Delete</button>
               </form>
+              <details style="margin-top:8px;">
+                <summary class="btn btn-outline btn-sm btn-block" style="cursor:pointer; text-align:center;">Edit</summary>
+                <form method="POST" action="/admin/gallery/<%= img._id %>/edit" enctype="multipart/form-data" style="margin-top:10px;">
+                  <div class="form-group">
+                    <label>Year</label>
+                    <input type="number" name="year" value="<%= img.year %>" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Caption</label>
+                    <input type="text" name="caption" value="<%= img.caption %>" maxlength="200">
+                  </div>
+                  <div class="form-group">
+                    <label>Replace Photo (optional)</label>
+                    <input type="file" name="image" accept="image/*">
+                    <p class="hint">Leave blank to keep the current photo - only choose a file here if you want to swap the picture itself.</p>
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-sm btn-block">Save Changes</button>
+                </form>
+              </details>
             </div>
           </div>
         <% }) %>
