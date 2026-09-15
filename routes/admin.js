@@ -213,6 +213,37 @@ router.post(
 );
 
 router.post(
+  '/gallery/:id/edit',
+  upload.single('image'),
+  wrap(async (req, res) => {
+    const img = await GalleryImage.findById(req.params.id);
+    if (!img) {
+      req.flash('error', 'Photo not found.');
+      return res.redirect('/admin/gallery');
+    }
+    const year = parseInt(req.body.year, 10);
+    if (!year) {
+      req.flash('error', 'Please choose a valid year.');
+      return res.redirect('/admin/gallery');
+    }
+    img.year = year;
+    img.caption = (req.body.caption || '').trim();
+
+    if (req.file) {
+      const oldPublicId = img.publicId;
+      const result = await saveImage(req.file, `gallery/${year}`);
+      img.imageUrl = result.url;
+      img.publicId = result.publicId;
+      await deleteImage(oldPublicId);
+    }
+
+    await img.save();
+    req.flash('success', 'Photo updated.');
+    res.redirect('/admin/gallery');
+  })
+);
+
+router.post(
   '/gallery/:id/delete',
   wrap(async (req, res) => {
     const img = await GalleryImage.findById(req.params.id);
