@@ -14,6 +14,36 @@
   </div>
 </section>
 
+<% if (settings.highlights && settings.highlights.length) { %>
+<section class="highlights-strip">
+  <div class="container">
+    <div class="highlights-grid">
+      <% settings.highlights.forEach(function(h) { %>
+        <div class="highlight-card">
+          <span class="highlight-icon">
+            <% if (h.icon === 'families') { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 19c.6-2.8 2.8-4.5 5.5-4.5s4.9 1.7 5.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M16 11a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2Z" stroke="currentColor" stroke-width="1.5"/><path d="M15 14.7c2.3.3 4 1.8 4.5 4.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <% } else if (h.icon === 'calendar') { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 9.5h17M8 3v3.5M16 3v3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <% } else if (h.icon === 'globe') { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5S9.6 5.8 12 3.5Z" stroke="currentColor" stroke-width="1.5"/></svg>
+            <% } else if (h.icon === 'heart') { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20s-7.5-4.7-10-9.3C.5 7.4 2.2 4 5.7 4c2 0 3.4 1 4.3 2.3C11 5 12.3 4 14.3 4c3.5 0 5.2 3.4 3.7 6.7C19.5 15.3 12 20 12 20Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <% } else if (h.icon === 'star') { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6-4.5-4.1 6-.7L12 3.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <% } else { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 21V10.5L12 4l8 6.5V21" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 21v-6h6v6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 4v3.2M9.5 6.2h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <% } %>
+          </span>
+          <strong class="highlight-value"><%= h.value %></strong>
+          <span class="highlight-label"><%= h.label %></span>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
 <div class="container">
   <div class="progress-card">
     <div class="figures">
