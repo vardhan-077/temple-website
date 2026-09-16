@@ -9,6 +9,21 @@
       <p>We remain deeply grateful to the devotees whose generosity built and sustains this temple - from its founding to every gift since.</p>
     </div>
 
+    <% if (shilapalakaPhotos && shilapalakaPhotos.length) { %>
+    <div style="max-width:960px; margin:0 auto 56px;">
+      <h3 style="text-align:center; margin-bottom:6px;">Shilapalakas</h3>
+      <p class="muted" style="text-align:center; margin-bottom:20px;">Stone plaques honoring those who gave land, materials, and funds during the temple's construction.</p>
+      <div class="gallery-grid shilapalaka-grid">
+        <% shilapalakaPhotos.forEach(function(p) { %>
+          <div class="gallery-item" data-full="<%= p.imageUrl %>" data-caption="<%= p.caption %>">
+            <img src="<%= p.imageUrl %>" alt="<%= p.caption || 'Shilapalaka - temple construction donor plaque' %>" loading="lazy">
+            <% if (p.caption) { %><span class="caption"><%= p.caption %></span><% } %>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+    <% } %>
+
     <% if (!donorGroups.length) { %>
       <div class="empty-state"><p>Our donor list will be added soon.</p></div>
     <% } else { %>
