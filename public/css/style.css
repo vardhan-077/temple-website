@@ -397,7 +397,7 @@ p { margin: 0 0 1em; }
   box-shadow: var(--shadow-soft);
   padding: 28px;
   max-width: 720px;
-  margin: -64px auto 0;
+  margin: 40px auto 0;
   position: relative;
   z-index: 5;
 }
