@@ -452,6 +452,13 @@ p { margin: 0 0 1em; }
   font-weight: 600;
   color: var(--gold-light);
   font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+.countdown-days-to-go {
+  color: var(--cream);
+  opacity: 0.9;
+  font-size: 0.95rem;
+  font-weight: 500;
   margin-bottom: 14px;
 }
 .countdown-grid {
