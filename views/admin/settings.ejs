@@ -109,23 +109,7 @@
     </div>
   </div>
 
-  <div class="panel">
-    <h2>Festival Countdown</h2>
-    <div class="form-group checkbox-row">
-      <input type="checkbox" id="festivalEnabled" name="festivalEnabled" <%= settings.festival.enabled ? 'checked' : '' %>>
-      <label for="festivalEnabled">Show countdown timer on homepage</label>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label for="festivalName">Festival Name</label>
-        <input type="text" id="festivalName" name="festivalName" value="<%= settings.festival.name %>">
-      </div>
-      <div class="form-group">
-        <label for="festivalDateTime">Festival Date &amp; Time (IST)</label>
-        <input type="datetime-local" id="festivalDateTime" name="festivalDateTime" value="<%= toISTDatetimeLocal(settings.festival.dateTime) %>">
-      </div>
-    </div>
-  </div>
+  <p class="hint" style="margin:-6px 0 20px;">Looking for the festival countdown? It now has its own <a href="/admin/festivals">Festivals</a> page, where you can add as many ongoing or upcoming festivals as you like.</p>
 
   <div class="panel">
     <h2>Social Links (optional)</h2>
@@ -158,6 +142,12 @@
         <img data-preview-for="heroImage" src="<%= settings.heroImageUrl || '/images/placeholders/hero-placeholder.svg' %>" alt="" style="width:100%;max-width:220px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">
         <input type="file" id="heroImage" name="heroImage" accept="image/*">
       </div>
+    </div>
+    <div class="form-group">
+      <label for="aboutImage">About Section Photo</label>
+      <img data-preview-for="aboutImage" src="<%= settings.aboutImageUrl || '/images/placeholders/gallery-temple.svg' %>" alt="" style="width:100%;max-width:220px;aspect-ratio:4/3;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">
+      <input type="file" id="aboutImage" name="aboutImage" accept="image/*">
+      <p class="hint">Shown alongside the "About" text on the homepage. Leave empty to show text only.</p>
     </div>
   </div>
 

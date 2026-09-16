@@ -1,0 +1,82 @@
+<%- include('../partials/_admin-layout-top') %>
+
+<h1>Pooja Timings</h1>
+<p class="hint" style="margin-top:-8px;">The temple's daily schedule of poojas and rituals, shown on its own public page.</p>
+
+<div class="panel">
+  <h2>Add a Pooja Timing</h2>
+  <form method="POST" action="/admin/pooja-timings/add">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">Pooja Name</label>
+        <input type="text" id="name" name="name" placeholder="e.g. Suprabhatam" required maxlength="120">
+      </div>
+      <div class="form-group">
+        <label for="time">Time</label>
+        <input type="text" id="time" name="time" placeholder="e.g. 6:00 AM" required maxlength="60">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="description">Note (optional)</label>
+        <input type="text" id="description" name="description" maxlength="200" placeholder="e.g. Daily except Mondays">
+      </div>
+      <div class="form-group">
+        <label for="order">Display Order</label>
+        <input type="number" id="order" name="order" value="0">
+        <p class="hint">Lower numbers appear first - use this to keep timings in the order of the day.</p>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Timing</button>
+  </form>
+</div>
+
+<h2 style="margin:28px 0 16px;">All Pooja Timings</h2>
+<% if (!timings.length) { %>
+  <p class="empty-hint">No pooja timings added yet.</p>
+<% } else { %>
+  <% timings.forEach(function(t) { %>
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <h2 style="margin-bottom:2px;"><%= t.name %></h2>
+          <p class="hint"><span class="tag"><%= t.time %></span></p>
+        </div>
+        <div class="action-row">
+          <form method="POST" action="/admin/pooja-timings/<%= t._id %>/delete" class="inline-form" data-confirm="Delete '<%= t.name %>'?">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </div>
+      </div>
+      <% if (t.description) { %><p><%= t.description %></p><% } %>
+      <details>
+        <summary class="btn btn-outline btn-sm" style="cursor:pointer;">Edit</summary>
+        <form method="POST" action="/admin/pooja-timings/<%= t._id %>/edit" style="margin-top:14px;">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Pooja Name</label>
+              <input type="text" name="name" value="<%= t.name %>" required maxlength="120">
+            </div>
+            <div class="form-group">
+              <label>Time</label>
+              <input type="text" name="time" value="<%= t.time %>" required maxlength="60">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Note</label>
+              <input type="text" name="description" value="<%= t.description %>" maxlength="200">
+            </div>
+            <div class="form-group">
+              <label>Order</label>
+              <input type="number" name="order" value="<%= t.order %>">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+        </form>
+      </details>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/_admin-layout-bottom') %>
