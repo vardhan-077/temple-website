@@ -1,0 +1,34 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Daily Schedule</span>
+      <h2>Pooja Timings</h2>
+      <div class="divider-motif">&#128330;</div>
+      <p>Join us for daily worship at the temple - here is our regular schedule of poojas and rituals.</p>
+    </div>
+
+    <% if (!timings.length) { %>
+      <div class="empty-state"><p>Our pooja schedule will be added soon.</p></div>
+    <% } else { %>
+      <div class="card" style="max-width:700px; margin:0 auto;">
+        <div class="card-body">
+          <ul style="list-style:none; padding:0; margin:0;">
+            <% timings.forEach(function(t, i) { %>
+            <li style="display:flex; justify-content:space-between; align-items:center; gap:16px; padding:16px 0; <%= i > 0 ? 'border-top:1px solid var(--cream-dark);' : '' %>">
+              <div>
+                <strong style="font-family:var(--font-display); font-size:1.15rem; font-weight:600; color:var(--maroon-dark);"><%= t.name %></strong>
+                <% if (t.description) { %><p class="muted" style="margin:4px 0 0; font-size:0.88rem;"><%= t.description %></p><% } %>
+              </div>
+              <span class="tag" style="white-space:nowrap;"><%= t.time %></span>
+            </li>
+            <% }) %>
+          </ul>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>

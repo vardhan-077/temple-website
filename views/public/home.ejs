@@ -88,20 +88,60 @@
 </section>
 <% } %>
 
-<% if (settings.festival && settings.festival.enabled) { %>
+<% if (festivals && (festivals.ongoing.length || festivals.upcoming.length)) { %>
 <section class="section">
   <div class="container">
-    <div class="leaderboard-card countdown-card" id="countdown"
-         data-target="<%= new Date(settings.festival.dateTime).toISOString() %>"
-         data-done-message="&#127881; <%= settings.festival.name %> is here! Join us for the celebrations.">
-      <p class="countdown-name">Counting down to <strong><%= settings.festival.name %></strong></p>
-      <div class="countdown-grid">
-        <div class="countdown-unit"><span class="num" data-unit="days">--</span><span class="label">Days</span></div>
-        <div class="countdown-unit"><span class="num" data-unit="hours">--</span><span class="label">Hours</span></div>
-        <div class="countdown-unit"><span class="num" data-unit="minutes">--</span><span class="label">Minutes</span></div>
-        <div class="countdown-unit"><span class="num" data-unit="seconds">--</span><span class="label">Seconds</span></div>
-      </div>
+
+    <% if (festivals.ongoing.length) { %>
+    <div class="section-header">
+      <span class="eyebrow">Happening Now</span>
+      <h2>&#127881; Ongoing Festivals</h2>
+      <div class="divider-motif">&#10022;</div>
     </div>
+    <div class="grid grid-2" style="margin-bottom: <%= festivals.upcoming.length ? '40px' : '0' %>;">
+      <% festivals.ongoing.forEach(function(f) { %>
+        <div class="leaderboard-card countdown-card"
+             data-target="<%= new Date(f.endDate || f.startDate).toISOString() %>"
+             data-done-message="&#127881; <%= f.name %> has concluded.">
+          <p class="countdown-name"><strong><%= f.name %></strong></p>
+          <p class="countdown-days-to-go"><%= f.daysToGo %> day<%= f.daysToGo === 1 ? '' : 's' %> left</p>
+          <div class="countdown-grid">
+            <div class="countdown-unit"><span class="num" data-unit="days">--</span><span class="label">Days</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="hours">--</span><span class="label">Hours</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="minutes">--</span><span class="label">Minutes</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="seconds">--</span><span class="label">Seconds</span></div>
+          </div>
+          <% if (f.description) { %><p class="muted" style="margin-top:10px;"><%= f.description %></p><% } %>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
+
+    <% if (festivals.upcoming.length) { %>
+    <div class="section-header">
+      <span class="eyebrow">Mark Your Calendar</span>
+      <h2>Upcoming Festivals</h2>
+      <div class="divider-motif">&#128330;</div>
+    </div>
+    <div class="grid grid-2">
+      <% festivals.upcoming.forEach(function(f) { %>
+        <div class="leaderboard-card countdown-card"
+             data-target="<%= new Date(f.startDate).toISOString() %>"
+             data-done-message="&#127881; <%= f.name %> is here! Join us for the celebrations.">
+          <p class="countdown-name">Counting down to <strong><%= f.name %></strong></p>
+          <p class="countdown-days-to-go"><%= f.daysToGo %> day<%= f.daysToGo === 1 ? '' : 's' %> to go</p>
+          <div class="countdown-grid">
+            <div class="countdown-unit"><span class="num" data-unit="days">--</span><span class="label">Days</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="hours">--</span><span class="label">Hours</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="minutes">--</span><span class="label">Minutes</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="seconds">--</span><span class="label">Seconds</span></div>
+          </div>
+          <% if (f.description) { %><p class="muted" style="margin-top:10px;"><%= f.description %></p><% } %>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
+
   </div>
 </section>
 <% } %>
@@ -113,8 +153,18 @@
       <h2>About <%= settings.templeName %></h2>
       <div class="divider-motif">&#128157;</div>
     </div>
+    <% if (settings.aboutImageUrl) { %>
+    <div class="grid grid-2" style="align-items:center;">
+      <img src="<%= settings.aboutImageUrl %>" alt="<%= settings.templeName %>" style="width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:var(--radius-lg); box-shadow:var(--shadow-soft);">
+      <div>
+        <p><%= settings.aboutShort %></p>
+        <a href="/history" class="btn btn-outline" style="border-color:var(--maroon); color:var(--maroon);">Read Full History &rarr;</a>
+      </div>
+    </div>
+    <% } else { %>
     <p class="text-center" style="max-width:760px;margin:0 auto 20px;"><%= settings.aboutShort %></p>
     <p class="text-center"><a href="/history" class="btn btn-outline" style="border-color:var(--maroon); color:var(--maroon);">Read Full History &rarr;</a></p>
+    <% } %>
   </div>
 </section>
 
