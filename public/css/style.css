@@ -750,6 +750,42 @@ p { margin: 0 0 1em; }
   color: var(--ink-soft);
 }
 
+/* ---------- Homepage highlights strip ---------- */
+.highlights-strip {
+  background: linear-gradient(135deg, var(--maroon-darkest) 0%, var(--maroon-dark) 100%);
+  padding: 28px 0;
+}
+.highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+@media (max-width: 800px) { .highlights-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 420px) { .highlights-grid { grid-template-columns: 1fr; } }
+.highlight-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 20px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 155, 63, 0.3);
+  border-radius: var(--radius-md);
+}
+.highlight-icon { color: var(--gold-light); margin-bottom: 4px; }
+.highlight-value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--cream);
+}
+.highlight-label {
+  font-size: 0.85rem;
+  color: var(--cream-dark);
+  opacity: 0.9;
+}
+
 /* ---------- Pooja timings table ---------- */
 .timing-table { width: 100%; border-collapse: collapse; }
 .timing-table th,
