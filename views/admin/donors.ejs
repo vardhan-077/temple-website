@@ -99,4 +99,66 @@
   <% }) %>
 <% } %>
 
+<h1 style="margin:40px 0 6px;">Shilapalaka Photos</h1>
+<p class="hint" style="margin-top:-4px;">Photos of the temple's shilapalakas (inscribed stone plaques) honoring those who gave land, materials, or funds during construction. These appear on the public Donors page as pictures of the actual stone, above the donor list - no need to retype names here.</p>
+
+<div class="panel">
+  <h2>Add a Shilapalaka Photo</h2>
+  <form method="POST" action="/admin/donors/shilapalaka/add" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="shilapalakaCaption">Caption (optional)</label>
+        <input type="text" id="shilapalakaCaption" name="caption" maxlength="200" placeholder="e.g. Land &amp; Material Donors">
+      </div>
+      <div class="form-group">
+        <label for="shilapalakaOrder">Display Order</label>
+        <input type="number" id="shilapalakaOrder" name="order" value="0">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="shilapalakaImage">Photo</label>
+      <input type="file" id="shilapalakaImage" name="image" accept="image/*" required>
+      <img data-preview-for="shilapalakaImage" style="display:block; margin-top:10px; max-width:220px; border-radius:var(--radius-sm); border:1px solid var(--cream-dark);">
+    </div>
+    <button type="submit" class="btn btn-primary">Upload Photo</button>
+  </form>
+</div>
+
+<% if (!shilapalakaPhotos.length) { %>
+  <p class="empty-hint">No shilapalaka photos uploaded yet.</p>
+<% } else { %>
+  <div class="thumb-grid">
+    <% shilapalakaPhotos.forEach(function(p) { %>
+      <div class="thumb-card">
+        <img src="<%= p.imageUrl %>" alt="<%= p.caption %>">
+        <div class="thumb-body">
+          <p><%= p.caption || 'No caption' %></p>
+          <form method="POST" action="/admin/donors/shilapalaka/<%= p._id %>/delete" data-confirm="Delete this photo? This cannot be undone.">
+            <button type="submit" class="btn btn-danger btn-sm btn-block">Delete</button>
+          </form>
+          <details style="margin-top:8px;">
+            <summary class="btn btn-outline btn-sm btn-block" style="cursor:pointer; text-align:center;">Edit</summary>
+            <form method="POST" action="/admin/donors/shilapalaka/<%= p._id %>/edit" enctype="multipart/form-data" style="margin-top:10px;">
+              <div class="form-group">
+                <label>Caption</label>
+                <input type="text" name="caption" value="<%= p.caption %>" maxlength="200">
+              </div>
+              <div class="form-group">
+                <label>Order</label>
+                <input type="number" name="order" value="<%= p.order %>">
+              </div>
+              <div class="form-group">
+                <label>Replace Photo (optional)</label>
+                <input type="file" name="image" accept="image/*">
+                <p class="hint">Leave blank to keep the current photo.</p>
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm btn-block">Save Changes</button>
+            </form>
+          </details>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
 <%- include('../partials/_admin-layout-bottom') %>
