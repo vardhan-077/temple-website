@@ -582,6 +582,18 @@ p { margin: 0 0 1em; }
 }
 .card-body { padding: 20px; }
 
+/* Committee member photo - a small centered circle instead of a big
+   full-width square, so profiles stay compact regardless of card width. */
+.committee-photo {
+  display: block;
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 24px auto 0;
+  border: 3px solid var(--cream-dark);
+}
+
 /* ---------- Leaderboard ---------- */
 .leaderboard-card {
   background: var(--maroon-dark);
