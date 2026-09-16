@@ -1,0 +1,93 @@
+<%- include('../partials/_admin-layout-top') %>
+
+<h1>Festivals</h1>
+<p class="hint" style="margin-top:-8px;">Add any festival or celebration with a start date (and an optional end date for multi-day events). The homepage automatically groups these into "Ongoing" and "Upcoming" and shows a live countdown for each - nothing to enable or disable, just add the dates.</p>
+
+<div class="panel">
+  <h2>Add a Festival</h2>
+  <form method="POST" action="/admin/festivals/add">
+    <div class="form-group">
+      <label for="name">Festival Name</label>
+      <input type="text" id="name" name="name" placeholder="e.g. Dasara Celebrations" required maxlength="120">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="startDate">Start Date &amp; Time (IST)</label>
+        <input type="datetime-local" id="startDate" name="startDate" required>
+      </div>
+      <div class="form-group">
+        <label for="endDate">End Date &amp; Time (optional, IST)</label>
+        <input type="datetime-local" id="endDate" name="endDate">
+        <p class="hint">Leave blank for a single-moment festival. Set this for multi-day celebrations so it shows as "Ongoing" until it ends.</p>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="description">Description (optional)</label>
+        <input type="text" id="description" name="description" maxlength="200" placeholder="e.g. Ten days of celebrations at the temple">
+      </div>
+      <div class="form-group">
+        <label for="order">Display Order</label>
+        <input type="number" id="order" name="order" value="0">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Festival</button>
+  </form>
+</div>
+
+<h2 style="margin:28px 0 16px;">All Festivals</h2>
+<% if (!festivals.length) { %>
+  <p class="empty-hint">No festivals added yet.</p>
+<% } else { %>
+  <% festivals.forEach(function(f) { %>
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <h2 style="margin-bottom:2px;"><%= f.name %></h2>
+          <p class="hint">
+            <%= new Date(f.startDate).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }) %>
+            <% if (f.endDate) { %> &rarr; <%= new Date(f.endDate).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }) %><% } %>
+          </p>
+        </div>
+        <div class="action-row">
+          <form method="POST" action="/admin/festivals/<%= f._id %>/delete" class="inline-form" data-confirm="Delete '<%= f.name %>'?">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </div>
+      </div>
+      <% if (f.description) { %><p><%= f.description %></p><% } %>
+      <details>
+        <summary class="btn btn-outline btn-sm" style="cursor:pointer;">Edit</summary>
+        <form method="POST" action="/admin/festivals/<%= f._id %>/edit" style="margin-top:14px;">
+          <div class="form-group">
+            <label>Festival Name</label>
+            <input type="text" name="name" value="<%= f.name %>" required maxlength="120">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Start Date &amp; Time (IST)</label>
+              <input type="datetime-local" name="startDate" value="<%= toISTDatetimeLocal(f.startDate) %>" required>
+            </div>
+            <div class="form-group">
+              <label>End Date &amp; Time (optional, IST)</label>
+              <input type="datetime-local" name="endDate" value="<%= f.endDate ? toISTDatetimeLocal(f.endDate) : '' %>">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Description</label>
+              <input type="text" name="description" value="<%= f.description %>" maxlength="200">
+            </div>
+            <div class="form-group">
+              <label>Order</label>
+              <input type="number" name="order" value="<%= f.order %>">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+        </form>
+      </details>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/_admin-layout-bottom') %>
