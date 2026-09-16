@@ -12,6 +12,7 @@ const ContactMessage = require('../models/ContactMessage');
 const Program = require('../models/Program');
 const Announcement = require('../models/Announcement');
 const Donor = require('../models/Donor');
+const ShilapalakaPhoto = require('../models/ShilapalakaPhoto');
 const Festival = require('../models/Festival');
 const PoojaTiming = require('../models/PoojaTiming');
 
@@ -621,11 +622,13 @@ router.get(
   wrap(async (req, res) => {
     const donors = await Donor.find().sort({ order: 1, createdAt: 1 }).lean();
     const categories = [...new Set(donors.map((d) => d.category))];
+    const shilapalakaPhotos = await ShilapalakaPhoto.find().sort({ order: 1, createdAt: 1 }).lean();
     res.render('admin/donors', {
       pageTitle: 'Donors',
       activeAdminNav: 'donors',
       donors,
       categories,
+      shilapalakaPhotos,
     });
   })
 );
@@ -683,6 +686,67 @@ router.post(
     if (donor) {
       await donor.deleteOne();
       req.flash('success', 'Donor removed.');
+    }
+    res.redirect('/admin/donors');
+  })
+);
+
+// ---- Shilapalaka (donor plaque) photos ----
+
+router.post(
+  '/donors/shilapalaka/add',
+  upload.single('image'),
+  wrap(async (req, res) => {
+    if (!req.file) {
+      req.flash('error', 'Please choose a photo to upload.');
+      return res.redirect('/admin/donors');
+    }
+    const result = await saveImage(req.file, 'shilapalaka');
+    await ShilapalakaPhoto.create({
+      imageUrl: result.url,
+      publicId: result.publicId,
+      caption: (req.body.caption || '').trim(),
+      order: Number(req.body.order) || 0,
+    });
+    req.flash('success', 'Shilapalaka photo added.');
+    res.redirect('/admin/donors');
+  })
+);
+
+router.post(
+  '/donors/shilapalaka/:id/edit',
+  upload.single('image'),
+  wrap(async (req, res) => {
+    const photo = await ShilapalakaPhoto.findById(req.params.id);
+    if (!photo) {
+      req.flash('error', 'Photo not found.');
+      return res.redirect('/admin/donors');
+    }
+    photo.caption = (req.body.caption || '').trim();
+    photo.order = Number(req.body.order) || 0;
+
+    if (req.file) {
+      const oldPublicId = photo.publicId;
+      const result = await saveImage(req.file, 'shilapalaka');
+      photo.imageUrl = result.url;
+      photo.publicId = result.publicId;
+      await deleteImage(oldPublicId);
+    }
+
+    await photo.save();
+    req.flash('success', 'Shilapalaka photo updated.');
+    res.redirect('/admin/donors');
+  })
+);
+
+router.post(
+  '/donors/shilapalaka/:id/delete',
+  wrap(async (req, res) => {
+    const photo = await ShilapalakaPhoto.findById(req.params.id);
+    if (photo) {
+      await deleteImage(photo.publicId);
+      await photo.deleteOne();
+      req.flash('success', 'Shilapalaka photo removed.');
     }
     res.redirect('/admin/donors');
   })

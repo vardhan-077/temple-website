@@ -9,6 +9,7 @@ const ContactMessage = require('../models/ContactMessage');
 const Program = require('../models/Program');
 const Announcement = require('../models/Announcement');
 const Donor = require('../models/Donor');
+const ShilapalakaPhoto = require('../models/ShilapalakaPhoto');
 const Festival = require('../models/Festival');
 const PoojaTiming = require('../models/PoojaTiming');
 const razorpayUtil = require('../utils/razorpay');
@@ -112,10 +113,12 @@ router.get('/committee', async (req, res, next) => {
 router.get('/donors', async (req, res, next) => {
   try {
     const donorGroups = await Donor.getGrouped();
+    const shilapalakaPhotos = await ShilapalakaPhoto.find().sort({ order: 1, createdAt: 1 }).lean();
     res.render('public/donors', {
       pageTitle: 'Our Benefactors',
       activeNav: 'donors',
       donorGroups,
+      shilapalakaPhotos,
     });
   } catch (err) {
     next(err);
