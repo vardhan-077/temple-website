@@ -14,7 +14,6 @@ const Announcement = require('../models/Announcement');
 const Donor = require('../models/Donor');
 const ShilapalakaPhoto = require('../models/ShilapalakaPhoto');
 const Festival = require('../models/Festival');
-const PoojaTiming = require('../models/PoojaTiming');
 
 const { requireAdminAuth, redirectIfLoggedIn } = require('../middleware/auth');
 const { upload, saveImage, deleteImage } = require('../utils/imageUpload');
@@ -628,13 +627,11 @@ router.get(
   wrap(async (req, res) => {
     const donors = await Donor.find().sort({ order: 1, createdAt: 1 }).lean();
     const categories = [...new Set(donors.map((d) => d.category))];
-    const shilapalakaPhotos = await ShilapalakaPhoto.find().sort({ order: 1, createdAt: 1 }).lean();
     res.render('admin/donors', {
       pageTitle: 'Donors',
       activeAdminNav: 'donors',
       donors,
       categories,
-      shilapalakaPhotos,
     });
   })
 );
@@ -692,67 +689,6 @@ router.post(
     if (donor) {
       await donor.deleteOne();
       req.flash('success', 'Donor removed.');
-    }
-    res.redirect('/admin/donors');
-  })
-);
-
-// ---- Shilapalaka (donor plaque) photos ----
-
-router.post(
-  '/donors/shilapalaka/add',
-  upload.single('image'),
-  wrap(async (req, res) => {
-    if (!req.file) {
-      req.flash('error', 'Please choose a photo to upload.');
-      return res.redirect('/admin/donors');
-    }
-    const result = await saveImage(req.file, 'shilapalaka');
-    await ShilapalakaPhoto.create({
-      imageUrl: result.url,
-      publicId: result.publicId,
-      caption: (req.body.caption || '').trim(),
-      order: Number(req.body.order) || 0,
-    });
-    req.flash('success', 'Shilapalaka photo added.');
-    res.redirect('/admin/donors');
-  })
-);
-
-router.post(
-  '/donors/shilapalaka/:id/edit',
-  upload.single('image'),
-  wrap(async (req, res) => {
-    const photo = await ShilapalakaPhoto.findById(req.params.id);
-    if (!photo) {
-      req.flash('error', 'Photo not found.');
-      return res.redirect('/admin/donors');
-    }
-    photo.caption = (req.body.caption || '').trim();
-    photo.order = Number(req.body.order) || 0;
-
-    if (req.file) {
-      const oldPublicId = photo.publicId;
-      const result = await saveImage(req.file, 'shilapalaka');
-      photo.imageUrl = result.url;
-      photo.publicId = result.publicId;
-      await deleteImage(oldPublicId);
-    }
-
-    await photo.save();
-    req.flash('success', 'Shilapalaka photo updated.');
-    res.redirect('/admin/donors');
-  })
-);
-
-router.post(
-  '/donors/shilapalaka/:id/delete',
-  wrap(async (req, res) => {
-    const photo = await ShilapalakaPhoto.findById(req.params.id);
-    if (photo) {
-      await deleteImage(photo.publicId);
-      await photo.deleteOne();
-      req.flash('success', 'Shilapalaka photo removed.');
     }
     res.redirect('/admin/donors');
   })
@@ -824,69 +760,76 @@ router.post(
   })
 );
 
-// ===================== Pooja Timings =====================
+// ===================== Shilapalaka Photos =====================
 
 router.get(
-  '/pooja-timings',
+  '/shilapalaka',
   wrap(async (req, res) => {
-    const timings = await PoojaTiming.find().sort({ order: 1, createdAt: 1 }).lean();
-    res.render('admin/pooja-timings', { pageTitle: 'Pooja Timings', activeAdminNav: 'pooja-timings', timings });
+    const shilapalakaPhotos = await ShilapalakaPhoto.find().sort({ order: 1, createdAt: 1 }).lean();
+    res.render('admin/shilapalaka', {
+      pageTitle: 'Shilapalaka Photos',
+      activeAdminNav: 'shilapalaka',
+      shilapalakaPhotos,
+    });
   })
 );
 
 router.post(
-  '/pooja-timings/add',
+  '/shilapalaka/add',
+  upload.single('image'),
   wrap(async (req, res) => {
-    const name = (req.body.name || '').trim();
-    const time = (req.body.time || '').trim();
-    if (!name || !time) {
-      req.flash('error', 'Please enter a name and a time.');
-      return res.redirect('/admin/pooja-timings');
+    if (!req.file) {
+      req.flash('error', 'Please choose a photo to upload.');
+      return res.redirect('/admin/shilapalaka');
     }
-    await PoojaTiming.create({
-      name,
-      time,
-      description: (req.body.description || '').trim(),
+    const result = await saveImage(req.file, 'shilapalaka');
+    await ShilapalakaPhoto.create({
+      imageUrl: result.url,
+      publicId: result.publicId,
+      caption: (req.body.caption || '').trim(),
       order: Number(req.body.order) || 0,
     });
-    req.flash('success', `"${name}" added.`);
-    res.redirect('/admin/pooja-timings');
+    req.flash('success', 'Shilapalaka photo added.');
+    res.redirect('/admin/shilapalaka');
   })
 );
 
 router.post(
-  '/pooja-timings/:id/edit',
+  '/shilapalaka/:id/edit',
+  upload.single('image'),
   wrap(async (req, res) => {
-    const timing = await PoojaTiming.findById(req.params.id);
-    if (!timing) {
-      req.flash('error', 'Pooja timing not found.');
-      return res.redirect('/admin/pooja-timings');
+    const photo = await ShilapalakaPhoto.findById(req.params.id);
+    if (!photo) {
+      req.flash('error', 'Photo not found.');
+      return res.redirect('/admin/shilapalaka');
     }
-    const name = (req.body.name || '').trim();
-    const time = (req.body.time || '').trim();
-    if (!name || !time) {
-      req.flash('error', 'Please enter a name and a time.');
-      return res.redirect('/admin/pooja-timings');
+    photo.caption = (req.body.caption || '').trim();
+    photo.order = Number(req.body.order) || 0;
+
+    if (req.file) {
+      const oldPublicId = photo.publicId;
+      const result = await saveImage(req.file, 'shilapalaka');
+      photo.imageUrl = result.url;
+      photo.publicId = result.publicId;
+      await deleteImage(oldPublicId);
     }
-    timing.name = name;
-    timing.time = time;
-    timing.description = (req.body.description || '').trim();
-    timing.order = Number(req.body.order) || 0;
-    await timing.save();
-    req.flash('success', 'Pooja timing updated.');
-    res.redirect('/admin/pooja-timings');
+
+    await photo.save();
+    req.flash('success', 'Shilapalaka photo updated.');
+    res.redirect('/admin/shilapalaka');
   })
 );
 
 router.post(
-  '/pooja-timings/:id/delete',
+  '/shilapalaka/:id/delete',
   wrap(async (req, res) => {
-    const timing = await PoojaTiming.findById(req.params.id);
-    if (timing) {
-      await timing.deleteOne();
-      req.flash('success', 'Pooja timing removed.');
+    const photo = await ShilapalakaPhoto.findById(req.params.id);
+    if (photo) {
+      await deleteImage(photo.publicId);
+      await photo.deleteOne();
+      req.flash('success', 'Shilapalaka photo removed.');
     }
-    res.redirect('/admin/pooja-timings');
+    res.redirect('/admin/shilapalaka');
   })
 );
 

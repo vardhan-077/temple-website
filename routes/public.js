@@ -11,7 +11,6 @@ const Announcement = require('../models/Announcement');
 const Donor = require('../models/Donor');
 const ShilapalakaPhoto = require('../models/ShilapalakaPhoto');
 const Festival = require('../models/Festival');
-const PoojaTiming = require('../models/PoojaTiming');
 const razorpayUtil = require('../utils/razorpay');
 
 // GET /
@@ -113,26 +112,24 @@ router.get('/committee', async (req, res, next) => {
 router.get('/donors', async (req, res, next) => {
   try {
     const donorGroups = await Donor.getGrouped();
-    const shilapalakaPhotos = await ShilapalakaPhoto.find().sort({ order: 1, createdAt: 1 }).lean();
     res.render('public/donors', {
       pageTitle: 'Our Benefactors',
       activeNav: 'donors',
       donorGroups,
-      shilapalakaPhotos,
     });
   } catch (err) {
     next(err);
   }
 });
 
-// GET /pooja-timings
-router.get('/pooja-timings', async (req, res, next) => {
+// GET /shilapalaka
+router.get('/shilapalaka', async (req, res, next) => {
   try {
-    const timings = await PoojaTiming.find().sort({ order: 1, createdAt: 1 }).lean();
-    res.render('public/pooja-timings', {
-      pageTitle: 'Pooja Timings',
-      activeNav: 'pooja-timings',
-      timings,
+    const photos = await ShilapalakaPhoto.find().sort({ order: 1, createdAt: 1 }).lean();
+    res.render('public/shilapalaka', {
+      pageTitle: 'Shilapalaka',
+      activeNav: 'shilapalaka',
+      photos,
     });
   } catch (err) {
     next(err);
