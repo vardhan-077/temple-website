@@ -12,6 +12,8 @@ const ContactMessage = require('../models/ContactMessage');
 const Program = require('../models/Program');
 const Announcement = require('../models/Announcement');
 const Donor = require('../models/Donor');
+const Festival = require('../models/Festival');
+const PoojaTiming = require('../models/PoojaTiming');
 
 const { requireAdminAuth, redirectIfLoggedIn } = require('../middleware/auth');
 const { upload, saveImage, deleteImage } = require('../utils/imageUpload');
@@ -108,6 +110,7 @@ router.post(
   upload.fields([
     { name: 'logo', maxCount: 1 },
     { name: 'heroImage', maxCount: 1 },
+    { name: 'aboutImage', maxCount: 1 },
     { name: 'upiQrImage', maxCount: 1 },
   ]),
   wrap(async (req, res) => {
@@ -136,12 +139,6 @@ router.post(
       branch: b.branch?.trim() || '',
     };
 
-    settings.festival = {
-      name: b.festivalName?.trim() || 'Upcoming Festival',
-      dateTime: b.festivalDateTime ? fromISTDatetimeLocal(b.festivalDateTime) : settings.festival.dateTime,
-      enabled: b.festivalEnabled === 'on',
-    };
-
     settings.socialLinks = {
       facebook: b.facebook?.trim() || '',
       instagram: b.instagram?.trim() || '',
@@ -160,6 +157,12 @@ router.post(
       const result = await saveImage(req.files.heroImage[0], 'branding');
       settings.heroImageUrl = result.url;
       settings.heroImagePublicId = result.publicId;
+    }
+    if (req.files?.aboutImage?.[0]) {
+      await deleteImage(settings.aboutImagePublicId);
+      const result = await saveImage(req.files.aboutImage[0], 'branding');
+      settings.aboutImageUrl = result.url;
+      settings.aboutImagePublicId = result.publicId;
     }
     if (req.files?.upiQrImage?.[0]) {
       await deleteImage(settings.upiQrPublicId);
@@ -682,6 +685,138 @@ router.post(
       req.flash('success', 'Donor removed.');
     }
     res.redirect('/admin/donors');
+  })
+);
+
+// ===================== Festivals =====================
+
+router.get(
+  '/festivals',
+  wrap(async (req, res) => {
+    const festivals = await Festival.find().sort({ startDate: 1, order: 1 }).lean();
+    res.render('admin/festivals', { pageTitle: 'Festivals', activeAdminNav: 'festivals', festivals });
+  })
+);
+
+router.post(
+  '/festivals/add',
+  wrap(async (req, res) => {
+    const name = (req.body.name || '').trim();
+    if (!name || !req.body.startDate) {
+      req.flash('error', 'Please enter a name and a start date.');
+      return res.redirect('/admin/festivals');
+    }
+    await Festival.create({
+      name,
+      startDate: fromISTDatetimeLocal(req.body.startDate),
+      endDate: req.body.endDate ? fromISTDatetimeLocal(req.body.endDate) : undefined,
+      description: (req.body.description || '').trim(),
+      order: Number(req.body.order) || 0,
+    });
+    req.flash('success', `"${name}" added.`);
+    res.redirect('/admin/festivals');
+  })
+);
+
+router.post(
+  '/festivals/:id/edit',
+  wrap(async (req, res) => {
+    const festival = await Festival.findById(req.params.id);
+    if (!festival) {
+      req.flash('error', 'Festival not found.');
+      return res.redirect('/admin/festivals');
+    }
+    const name = (req.body.name || '').trim();
+    if (!name || !req.body.startDate) {
+      req.flash('error', 'Please enter a name and a start date.');
+      return res.redirect('/admin/festivals');
+    }
+    festival.name = name;
+    festival.startDate = fromISTDatetimeLocal(req.body.startDate);
+    festival.endDate = req.body.endDate ? fromISTDatetimeLocal(req.body.endDate) : undefined;
+    festival.description = (req.body.description || '').trim();
+    festival.order = Number(req.body.order) || 0;
+    await festival.save();
+    req.flash('success', 'Festival updated.');
+    res.redirect('/admin/festivals');
+  })
+);
+
+router.post(
+  '/festivals/:id/delete',
+  wrap(async (req, res) => {
+    const festival = await Festival.findById(req.params.id);
+    if (festival) {
+      await festival.deleteOne();
+      req.flash('success', 'Festival removed.');
+    }
+    res.redirect('/admin/festivals');
+  })
+);
+
+// ===================== Pooja Timings =====================
+
+router.get(
+  '/pooja-timings',
+  wrap(async (req, res) => {
+    const timings = await PoojaTiming.find().sort({ order: 1, createdAt: 1 }).lean();
+    res.render('admin/pooja-timings', { pageTitle: 'Pooja Timings', activeAdminNav: 'pooja-timings', timings });
+  })
+);
+
+router.post(
+  '/pooja-timings/add',
+  wrap(async (req, res) => {
+    const name = (req.body.name || '').trim();
+    const time = (req.body.time || '').trim();
+    if (!name || !time) {
+      req.flash('error', 'Please enter a name and a time.');
+      return res.redirect('/admin/pooja-timings');
+    }
+    await PoojaTiming.create({
+      name,
+      time,
+      description: (req.body.description || '').trim(),
+      order: Number(req.body.order) || 0,
+    });
+    req.flash('success', `"${name}" added.`);
+    res.redirect('/admin/pooja-timings');
+  })
+);
+
+router.post(
+  '/pooja-timings/:id/edit',
+  wrap(async (req, res) => {
+    const timing = await PoojaTiming.findById(req.params.id);
+    if (!timing) {
+      req.flash('error', 'Pooja timing not found.');
+      return res.redirect('/admin/pooja-timings');
+    }
+    const name = (req.body.name || '').trim();
+    const time = (req.body.time || '').trim();
+    if (!name || !time) {
+      req.flash('error', 'Please enter a name and a time.');
+      return res.redirect('/admin/pooja-timings');
+    }
+    timing.name = name;
+    timing.time = time;
+    timing.description = (req.body.description || '').trim();
+    timing.order = Number(req.body.order) || 0;
+    await timing.save();
+    req.flash('success', 'Pooja timing updated.');
+    res.redirect('/admin/pooja-timings');
+  })
+);
+
+router.post(
+  '/pooja-timings/:id/delete',
+  wrap(async (req, res) => {
+    const timing = await PoojaTiming.findById(req.params.id);
+    if (timing) {
+      await timing.deleteOne();
+      req.flash('success', 'Pooja timing removed.');
+    }
+    res.redirect('/admin/pooja-timings');
   })
 );
 

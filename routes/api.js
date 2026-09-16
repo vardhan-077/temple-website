@@ -42,7 +42,6 @@ router.get('/settings/public', async (req, res, next) => {
       upiId: settings.upiId,
       upiQrImageUrl: settings.upiQrImageUrl,
       taxInfo: settings.taxInfo,
-      festival: settings.festival,
       socialLinks: settings.socialLinks,
       razorpayEnabled: razorpayUtil.isConfigured,
       donation: {
