@@ -25,6 +25,8 @@ const settingsSchema = new mongoose.Schema(
     logoPublicId: { type: String, default: '' },
     heroImageUrl: { type: String, default: '' },
     heroImagePublicId: { type: String, default: '' },
+    aboutImageUrl: { type: String, default: '' },
+    aboutImagePublicId: { type: String, default: '' },
 
     donationTargetAmount: { type: Number, default: 500000 },
 
@@ -42,12 +44,6 @@ const settingsSchema = new mongoose.Schema(
     taxInfo: {
       type: String,
       default: '',
-    },
-
-    festival: {
-      name: { type: String, default: 'Annual Festival' },
-      dateTime: { type: Date, default: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
-      enabled: { type: Boolean, default: true },
     },
 
     socialLinks: {
