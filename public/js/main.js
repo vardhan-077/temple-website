@@ -107,9 +107,11 @@
     });
   });
 
-  // ---------- Festival countdown ----------
-  var countdownEl = document.getElementById('countdown');
-  if (countdownEl && countdownEl.getAttribute('data-target')) {
+  // ---------- Festival countdown(s) ----------
+  // Drives every countdown card on the page independently (the homepage can
+  // show several at once - one per ongoing/upcoming festival).
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  Array.prototype.forEach.call(document.querySelectorAll('.countdown-card[data-target]'), function (countdownEl) {
     var target = new Date(countdownEl.getAttribute('data-target')).getTime();
     var doneMessage = countdownEl.getAttribute('data-done-message') || 'The festival is here!';
     var units = {
@@ -118,7 +120,6 @@
       minutes: countdownEl.querySelector('[data-unit="minutes"]'),
       seconds: countdownEl.querySelector('[data-unit="seconds"]'),
     };
-    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
     var countdownTimer = setInterval(tickCountdown, 1000);
     tickCountdown();
 
@@ -138,7 +139,7 @@
       if (units.minutes) units.minutes.textContent = pad(minutes);
       if (units.seconds) units.seconds.textContent = pad(seconds);
     }
-  }
+  });
 
   // ---------- Live-ish progress bar + leaderboard polling ----------
   var progressFill = document.querySelector('[data-progress-fill]');
