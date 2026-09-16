@@ -132,6 +132,12 @@ router.post(
     settings.taxInfo = b.taxInfo?.trim() || '';
     settings.locationShort = b.locationShort?.trim() || '';
 
+    settings.highlights = [0, 1, 2, 3].map((i) => ({
+      icon: (b[`highlightIcon${i}`] || 'temple').trim(),
+      value: (b[`highlightValue${i}`] || '').trim(),
+      label: (b[`highlightLabel${i}`] || '').trim(),
+    }));
+
     settings.bankDetails = {
       accountName: b.accountName?.trim() || '',
       accountNumber: b.accountNumber?.trim() || '',
