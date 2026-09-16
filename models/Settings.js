@@ -28,6 +28,26 @@ const settingsSchema = new mongoose.Schema(
     aboutImageUrl: { type: String, default: '' },
     aboutImagePublicId: { type: String, default: '' },
 
+    // The 4-box "100+ Years of Heritage" style highlight strip near the top
+    // of the homepage. Always exactly 4 entries, edited by position in the
+    // admin form rather than added/removed individually.
+    highlights: {
+      type: [
+        {
+          icon: { type: String, default: 'temple' },
+          value: { type: String, default: '' },
+          label: { type: String, default: '' },
+          _id: false,
+        },
+      ],
+      default: () => [
+        { icon: 'temple', value: '100+', label: 'Years of Heritage' },
+        { icon: 'families', value: 'Families', label: 'United by Devotion' },
+        { icon: 'calendar', value: '10+', label: 'Annual Festivals' },
+        { icon: 'globe', value: 'Villagers', label: 'Across the World' },
+      ],
+    },
+
     donationTargetAmount: { type: Number, default: 500000 },
 
     bankDetails: {
