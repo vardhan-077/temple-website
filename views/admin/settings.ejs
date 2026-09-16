@@ -58,6 +58,40 @@
   </div>
 
   <div class="panel">
+    <h2>Homepage Highlights</h2>
+    <p class="hint" style="margin-top:-6px;">The 4-box highlight strip shown near the top of the homepage - e.g. "100+ Years of Heritage".</p>
+    <% var highlightIconOptions = [
+      ['temple', 'Temple'],
+      ['families', 'Families'],
+      ['calendar', 'Calendar'],
+      ['globe', 'Globe'],
+      ['heart', 'Heart'],
+      ['star', 'Star'],
+    ]; %>
+    <% var highlightRows = (settings.highlights && settings.highlights.length ? settings.highlights : [{}, {}, {}, {}]); %>
+    <% highlightRows.forEach(function(h, i) { %>
+      <div class="form-row" style="align-items:flex-end;">
+        <div class="form-group" style="max-width:150px;">
+          <label for="highlightIcon<%= i %>">Icon</label>
+          <select id="highlightIcon<%= i %>" name="highlightIcon<%= i %>">
+            <% highlightIconOptions.forEach(function(opt) { %>
+              <option value="<%= opt[0] %>" <%= h.icon === opt[0] ? 'selected' : '' %>><%= opt[1] %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="highlightValue<%= i %>">Big Text</label>
+          <input type="text" id="highlightValue<%= i %>" name="highlightValue<%= i %>" value="<%= h.value || '' %>" placeholder="e.g. 100+" maxlength="40">
+        </div>
+        <div class="form-group">
+          <label for="highlightLabel<%= i %>">Caption</label>
+          <input type="text" id="highlightLabel<%= i %>" name="highlightLabel<%= i %>" value="<%= h.label || '' %>" placeholder="e.g. Years of Heritage" maxlength="60">
+        </div>
+      </div>
+    <% }) %>
+  </div>
+
+  <div class="panel">
     <h2>Donation Goal</h2>
     <div class="form-group">
       <label for="donationTargetAmount">Target Amount (&#8377;)</label>
