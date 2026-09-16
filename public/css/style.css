@@ -731,10 +731,63 @@ p { margin: 0 0 1em; }
   transition: opacity 0.2s ease;
 }
 .gallery-item:hover .caption { opacity: 1; }
+
+/* Shilapalaka (donor plaque) photos on the Donors page - these are tall,
+   text-heavy plaque photos, so they need "contain" (not "cover") sizing to
+   stay readable, unlike regular gallery photos. */
+.shilapalaka-grid .gallery-item {
+  aspect-ratio: 3 / 4;
+  background: var(--maroon-dark);
+}
+.shilapalaka-grid .gallery-item img {
+  object-fit: contain;
+  padding: 6px;
+}
+
 .empty-state {
   text-align: center;
   padding: 50px 20px;
   color: var(--ink-soft);
+}
+
+/* ---------- Pooja timings table ---------- */
+.timing-table { width: 100%; border-collapse: collapse; }
+.timing-table th,
+.timing-table td {
+  padding: 16px 24px;
+  text-align: left;
+  border-bottom: 1px solid var(--cream-dark);
+}
+.timing-table th {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  background: var(--cream);
+}
+.timing-table tbody tr:last-child td { border-bottom: none; }
+.timing-table td strong {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--maroon-dark);
+}
+.timing-table .timing-note {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+.timing-table .timing-time {
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--maroon);
+  text-align: right;
+}
+@media (max-width: 560px) {
+  .timing-table th, .timing-table td { padding: 12px 14px; }
 }
 
 .lightbox {
