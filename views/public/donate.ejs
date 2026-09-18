@@ -116,6 +116,23 @@
               <button class="copy-btn" data-copy-text="<%= settings.upiId %>">Copy UPI ID</button>
             </div>
             <p class="muted" style="margin-top:14px; font-size:0.85rem;">After transferring, please share a screenshot with us via WhatsApp or the Contact page so we can add you to the donor records.</p>
+
+            <% if (settings.upiId && settings.upiId !== 'yourtemple@upi') {
+              var upiParams = 'pa=' + encodeURIComponent(settings.upiId) +
+                '&pn=' + encodeURIComponent(settings.templeName) +
+                '&cu=INR&tn=' + encodeURIComponent('Donation to ' + settings.templeName);
+            %>
+            <div class="upi-tap-pay">
+              <p class="upi-tap-label">Or tap to pay instantly from your phone</p>
+              <a class="btn btn-primary btn-block" href="upi://pay?<%= upiParams %>">Pay via any UPI App</a>
+              <div class="upi-app-row">
+                <a class="btn btn-maroon btn-sm" href="tez://upi/pay?<%= upiParams %>">Google Pay</a>
+                <a class="btn btn-maroon btn-sm" href="phonepe://pay?<%= upiParams %>">PhonePe</a>
+                <a class="btn btn-maroon btn-sm" href="paytmmp://pay?<%= upiParams %>">Paytm</a>
+              </div>
+              <p class="muted" style="margin-top:10px; font-size:0.78rem;">These buttons work on a phone with the app installed. On a computer, scan the QR code above instead.</p>
+            </div>
+            <% } %>
           </div>
         </div>
       </div>
