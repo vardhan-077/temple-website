@@ -688,6 +688,29 @@ p { margin: 0 0 1em; }
   border-radius: var(--radius-sm);
   border: 1px solid var(--cream-dark);
 }
+.upi-tap-pay {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--cream-dark);
+  text-align: center;
+}
+.upi-tap-label {
+  font-weight: 700;
+  color: var(--maroon-dark);
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+.upi-app-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 10px;
+}
+.upi-app-row .btn {
+  flex: 1 1 auto;
+  min-width: 100px;
+}
 
 /* ---------- Gallery ---------- */
 .year-tabs {
