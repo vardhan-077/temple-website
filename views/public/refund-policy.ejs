@@ -2,23 +2,26 @@
 
 <section class="section">
   <div class="container" style="max-width:800px;">
-    <h1>Refund &amp; Cancellation Policy</h1>
+    <h1>Refund &amp; Return Policy</h1>
     <p class="muted">Last updated: <%= new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long' }) %></p>
 
-    <h3>1. Nature of Donations</h3>
-    <p>Contributions made through this website are voluntary donations to <%= settings.templeName %> and are, as a general rule, non-refundable once processed, since they are applied towards temple activities, maintenance and community service.</p>
+    <h3>1. Order Cancellation</h3>
+    <p>You may cancel an order by contacting us at <a href="mailto:<%= settings.email %>"><%= settings.email %></a> or <%= settings.phone %> as soon as possible after placing it. Orders that have already been packed or shipped cannot be cancelled, but may still be eligible for return once delivered - see below.</p>
 
-    <h3>2. Errors &amp; Duplicate Payments</h3>
-    <p>If you believe a payment was made in error - for example, a duplicate charge, an incorrect amount due to a technical issue, or a payment that did not complete but money was deducted from your account - please contact us within 7 days of the transaction at <a href="mailto:<%= settings.email %>"><%= settings.email %></a> or <%= settings.phone %>, along with your payment reference ID (available in your payment confirmation email/SMS from Razorpay).</p>
+    <h3>2. Damaged, Defective or Incorrect Items</h3>
+    <p>If an item arrives damaged, defective, or different from what you ordered, please contact us within 3 days of delivery at <a href="mailto:<%= settings.email %>"><%= settings.email %></a> or <%= settings.phone %>, along with your Order ID and a photo of the item. We will arrange a replacement or a refund, at our discretion, once the issue is verified.</p>
 
-    <h3>3. Review &amp; Processing</h3>
-    <p>Eligible refund requests will be reviewed by the temple committee. Approved refunds are processed back to the original payment method through Razorpay, and typically reflect as per Razorpay's and your bank's standard processing timelines.</p>
+    <h3>3. Returns</h3>
+    <p>Because most items in our shop are pooja essentials, books, clothing and jewellery replicas intended for personal or ritual use, we generally do not accept returns for a change of mind once an item has been delivered in good condition. Returns are accepted only for damaged, defective or incorrect items as described above.</p>
 
-    <h3>4. Cancellations</h3>
-    <p>Since donations are processed immediately upon successful payment, they cannot be "cancelled" after completion - please see the Errors &amp; Duplicate Payments section above if something went wrong.</p>
+    <h3>4. Payment Errors &amp; Duplicate Charges</h3>
+    <p>If you believe a payment was made in error - for example, a duplicate charge, an incorrect amount due to a technical issue, or a payment that did not complete but money was deducted from your account - please contact us within 7 days of the transaction with your Order ID and payment reference (available in your payment confirmation from Razorpay, or your bank/UPI app for direct UPI payments).</p>
 
-    <h3>5. Contact</h3>
-    <p>For any payment-related concern, reach out to us at <a href="mailto:<%= settings.email %>"><%= settings.email %></a> or via the <a href="/contact">Contact page</a>.</p>
+    <h3>5. Refund Processing</h3>
+    <p>Approved refunds are processed back to the original payment method (via Razorpay for card/UPI-through-Razorpay payments, or by bank transfer/UPI for direct UPI payments) and typically reflect as per Razorpay's and your bank's standard processing timelines, usually within 5-10 business days.</p>
+
+    <h3>6. Contact</h3>
+    <p>For any order or payment-related concern, reach out to us at <a href="mailto:<%= settings.email %>"><%= settings.email %></a> or via the <a href="/contact">Contact page</a>.</p>
   </div>
 </section>
 

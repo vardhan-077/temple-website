@@ -8,7 +8,7 @@
     <% if (settings.locationShort) { %><p class="hero-location">&#128205; <%= settings.locationShort %></p><% } %>
     <div class="hero-divider"><span></span><span class="hero-divider-dot"></span><span></span></div>
     <div class="hero-actions">
-      <a href="/donate" class="btn btn-primary">Donate Now</a>
+      <a href="/products" class="btn btn-primary">Shop Now</a>
       <a href="/gallery" class="btn btn-outline">View Gallery</a>
     </div>
   </div>
@@ -44,22 +44,30 @@
 </section>
 <% } %>
 
-<div class="container">
-  <div class="progress-card">
-    <div class="figures">
-      <span class="raised" data-raised-amount>&#8377;<%= donation.total.toLocaleString('en-IN') %> raised</span>
-      <span class="target">of &#8377;<%= donation.target.toLocaleString('en-IN') %> goal</span>
+<% if (featuredProducts && featuredProducts.length) { %>
+<section class="section section-alt" style="padding-bottom:56px;">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Temple Shop</span>
+      <h2>Pooja Items &amp; Temple Merchandise</h2>
+      <div class="divider-motif">&#128330;</div>
+      <p>Bring home blessed pooja essentials, books and temple merchandise.</p>
     </div>
-    <div class="progress-track">
-      <div class="progress-fill" data-progress-fill style="width: <%= donation.percent %>%;"></div>
+    <div class="grid grid-4">
+      <% featuredProducts.forEach(function(p) { %>
+        <div class="card product-card">
+          <img src="<%= p.imageUrl || '/images/placeholders/gallery-temple.svg' %>" alt="<%= p.name %>">
+          <div class="card-body">
+            <h3 class="product-name" style="font-size:1.05rem;"><%= p.name %></h3>
+            <p class="product-price" style="margin:0;"><%= formatINR(p.price) %></p>
+          </div>
+        </div>
+      <% }) %>
     </div>
-    <div class="progress-meta">
-      <span><strong data-raised-percent><%= donation.percent %>%</strong> funded</span>
-      <span><strong data-donor-count><%= donation.count %></strong> donors so far</span>
-      <a href="/donate" class="btn btn-maroon btn-sm">Contribute</a>
-    </div>
+    <p class="text-center" style="margin-top:28px;"><a href="/products" class="btn btn-primary">Visit the Shop &rarr;</a></p>
   </div>
-</div>
+</section>
+<% } %>
 
 <% if (announcements && announcements.length) { %>
 <section class="section announcements-section">
@@ -199,58 +207,6 @@
 </section>
 
 <section class="section">
-  <div class="container">
-    <div class="grid grid-2">
-      <div>
-        <div class="section-header" style="text-align:left; margin-bottom:20px;">
-          <span class="eyebrow">Top Donors</span>
-          <h2>Live Donation Leaderboard</h2>
-        </div>
-        <div class="leaderboard-card">
-          <ul class="leaderboard-list" id="leaderboardList">
-            <% if (!leaderboard.length) { %>
-              <li class="leaderboard-empty">Be the first to donate today!</li>
-            <% } else { %>
-              <% leaderboard.forEach(function(d, i) { %>
-              <li>
-                <span class="leaderboard-rank"><%= i + 1 %></span>
-                <span class="leaderboard-name"><%= d.isAnonymous ? 'Anonymous Devotee' : d.name %></span>
-                <span class="leaderboard-amount">&#8377;<%= d.amount.toLocaleString('en-IN') %></span>
-              </li>
-              <% }) %>
-            <% } %>
-          </ul>
-        </div>
-      </div>
-      <div>
-        <div class="section-header" style="text-align:left; margin-bottom:20px;">
-          <span class="eyebrow">Prefer Bank Transfer?</span>
-          <h2>Bank &amp; UPI Details</h2>
-        </div>
-        <div class="card pay-details">
-          <div class="card-body">
-            <dl>
-              <dt>Account Name</dt><dd><%= settings.bankDetails.accountName %></dd>
-              <dt>Account Number</dt><dd><%= settings.bankDetails.accountNumber %></dd>
-              <dt>IFSC</dt><dd><%= settings.bankDetails.ifsc %></dd>
-              <dt>Bank &amp; Branch</dt><dd><%= settings.bankDetails.bankName %>, <%= settings.bankDetails.branch %></dd>
-              <dt>UPI ID</dt>
-              <dd>
-                <div class="copy-row">
-                  <span><%= settings.upiId %></span>
-                  <button class="copy-btn" data-copy-text="<%= settings.upiId %>">Copy</button>
-                </div>
-              </dd>
-            </dl>
-            <p style="margin-top:14px;"><a href="/donate#bank-transfer" class="btn btn-maroon btn-sm">View QR &amp; Full Details</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section section-alt">
   <div class="container">
     <div class="section-header">
       <span class="eyebrow">Our Committee</span>
