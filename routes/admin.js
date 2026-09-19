@@ -7,13 +7,14 @@ const Settings = require('../models/Settings');
 const GalleryImage = require('../models/GalleryImage');
 const History = require('../models/History');
 const CommitteeMember = require('../models/CommitteeMember');
-const Donation = require('../models/Donation');
 const ContactMessage = require('../models/ContactMessage');
 const Program = require('../models/Program');
 const Announcement = require('../models/Announcement');
 const Donor = require('../models/Donor');
 const ShilapalakaPhoto = require('../models/ShilapalakaPhoto');
 const Festival = require('../models/Festival');
+const Product = require('../models/Product');
+const Order = require('../models/Order');
 
 const { requireAdminAuth, redirectIfLoggedIn } = require('../middleware/auth');
 const { upload, saveImage, deleteImage } = require('../utils/imageUpload');
@@ -75,26 +76,26 @@ router.use(requireAdminAuth);
 router.get(
   '/',
   wrap(async (req, res) => {
-    const [totals, recentDonations, unreadMessages, galleryCount, committeeCount] = await Promise.all([
-      Donation.getTotalRaised(),
-      Donation.find().sort({ createdAt: -1 }).limit(6).lean(),
+    const [totals, recentOrders, unreadMessages, galleryCount, committeeCount, productCount, pendingOrderCount] = await Promise.all([
+      Order.getTotals(),
+      Order.find().sort({ createdAt: -1 }).limit(6).lean(),
       ContactMessage.countDocuments({ status: 'new' }),
       GalleryImage.countDocuments(),
       CommitteeMember.countDocuments(),
+      Product.countDocuments({ isActive: true }),
+      Order.countDocuments({ status: 'pending' }),
     ]);
-    const settings = await settingsCache.getSettings();
-    const target = settings.donationTargetAmount || 0;
-    const percent = target > 0 ? Math.min(100, Math.round((totals.total / target) * 100)) : 0;
 
     res.render('admin/dashboard', {
       pageTitle: 'Dashboard',
       activeAdminNav: 'dashboard',
       totals,
-      percent,
-      recentDonations,
+      recentOrders,
       unreadMessages,
       galleryCount,
       committeeCount,
+      productCount,
+      pendingOrderCount,
     });
   })
 );
@@ -126,7 +127,6 @@ router.post(
     settings.email = b.email?.trim() || '';
     settings.whatsappNumber = (b.whatsappNumber || '').replace(/\D/g, '');
     settings.mapEmbedUrl = b.mapEmbedUrl?.trim() || '';
-    settings.donationTargetAmount = Math.max(0, Number(b.donationTargetAmount) || 0);
     settings.upiId = b.upiId?.trim() || '';
     settings.taxInfo = b.taxInfo?.trim() || '';
     settings.locationShort = b.locationShort?.trim() || '';
@@ -833,56 +833,148 @@ router.post(
   })
 );
 
-// ===================== Donations =====================
+// ===================== Products (temple shop) =====================
 
 router.get(
-  '/donations',
+  '/products',
   wrap(async (req, res) => {
-    const donations = await Donation.find().sort({ createdAt: -1 }).limit(200).lean();
-    const totals = await Donation.getTotalRaised();
-    res.render('admin/donations', { pageTitle: 'Donations', activeAdminNav: 'donations', donations, totals });
+    const products = await Product.find().sort({ order: 1, createdAt: 1 }).lean();
+    res.render('admin/products', { pageTitle: 'Products', activeAdminNav: 'products', products });
   })
 );
 
 router.post(
-  '/donations/manual',
+  '/products/add',
+  upload.single('image'),
   wrap(async (req, res) => {
-    const amount = Number(req.body.amount);
-    if (!amount || amount <= 0) {
-      req.flash('error', 'Please enter a valid amount.');
-      return res.redirect('/admin/donations');
+    const name = (req.body.name || '').trim();
+    const price = Number(req.body.price);
+    if (!name || !Number.isFinite(price) || price <= 0) {
+      req.flash('error', 'Please enter a name and a valid price.');
+      return res.redirect('/admin/products');
     }
-    await Donation.create({
-      name: (req.body.name || '').trim() || 'Anonymous Devotee',
-      amount,
-      isAnonymous: req.body.isAnonymous === 'on',
-      method: 'manual',
-      status: 'paid',
-      note: (req.body.note || '').trim(),
+    let imageUrl = '';
+    let publicId = '';
+    if (req.file) {
+      const result = await saveImage(req.file, 'products');
+      imageUrl = result.url;
+      publicId = result.publicId;
+    }
+    await Product.create({
+      name,
+      description: (req.body.description || '').trim(),
+      price,
+      category: (req.body.category || 'Pooja Items & Temple Merchandise').trim(),
+      imageUrl,
+      publicId,
+      order: Number(req.body.order) || 0,
     });
-    req.flash('success', 'Manual donation recorded.');
-    res.redirect('/admin/donations');
+    req.flash('success', 'Product added.');
+    res.redirect('/admin/products');
   })
 );
 
 router.post(
-  '/donations/:id/toggle-visibility',
+  '/products/:id/edit',
+  upload.single('image'),
   wrap(async (req, res) => {
-    const donation = await Donation.findById(req.params.id);
-    if (donation) {
-      donation.visibleOnLeaderboard = !donation.visibleOnLeaderboard;
-      await donation.save();
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      req.flash('error', 'Product not found.');
+      return res.redirect('/admin/products');
     }
-    res.redirect('/admin/donations');
+    const name = (req.body.name || '').trim();
+    const price = Number(req.body.price);
+    if (!name || !Number.isFinite(price) || price <= 0) {
+      req.flash('error', 'Please enter a name and a valid price.');
+      return res.redirect('/admin/products');
+    }
+    product.name = name;
+    product.description = (req.body.description || '').trim();
+    product.price = price;
+    product.category = (req.body.category || product.category).trim();
+    product.order = Number(req.body.order) || 0;
+    if (req.file) {
+      await deleteImage(product.publicId);
+      const result = await saveImage(req.file, 'products');
+      product.imageUrl = result.url;
+      product.publicId = result.publicId;
+    }
+    await product.save();
+    req.flash('success', 'Product updated.');
+    res.redirect('/admin/products');
   })
 );
 
 router.post(
-  '/donations/:id/delete',
+  '/products/:id/toggle-active',
   wrap(async (req, res) => {
-    await Donation.findByIdAndDelete(req.params.id);
-    req.flash('success', 'Donation record deleted.');
-    res.redirect('/admin/donations');
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      product.isActive = !product.isActive;
+      await product.save();
+    }
+    res.redirect('/admin/products');
+  })
+);
+
+router.post(
+  '/products/:id/delete',
+  wrap(async (req, res) => {
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      await deleteImage(product.publicId);
+      await product.deleteOne();
+      req.flash('success', 'Product deleted.');
+    }
+    res.redirect('/admin/products');
+  })
+);
+
+// ===================== Orders =====================
+
+router.get(
+  '/orders',
+  wrap(async (req, res) => {
+    const orders = await Order.find().sort({ createdAt: -1 }).limit(200).lean();
+    const totals = await Order.getTotals();
+    res.render('admin/orders', { pageTitle: 'Orders', activeAdminNav: 'orders', orders, totals });
+  })
+);
+
+router.post(
+  '/orders/:id/mark-paid',
+  wrap(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      order.status = 'paid';
+      await order.save();
+      req.flash('success', 'Order marked as paid.');
+    }
+    res.redirect('/admin/orders');
+  })
+);
+
+router.post(
+  '/orders/:id/fulfillment',
+  wrap(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    const allowed = ['pending', 'packed', 'shipped', 'delivered'];
+    if (order && allowed.includes(req.body.fulfillment)) {
+      order.fulfillment = req.body.fulfillment;
+      await order.save();
+      req.flash('success', 'Order status updated.');
+    }
+    res.redirect('/admin/orders');
+  })
+);
+
+router.post(
+  '/orders/:id/delete',
+  wrap(async (req, res) => {
+    await Order.findByIdAndDelete(req.params.id);
+    req.flash('success', 'Order deleted.');
+    res.redirect('/admin/orders');
   })
 );
 

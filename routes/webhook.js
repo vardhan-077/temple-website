@@ -1,10 +1,10 @@
-const Donation = require('../models/Donation');
+const Order = require('../models/Order');
 const razorpayUtil = require('../utils/razorpay');
 
 /**
  * Handles Razorpay webhook events. This is the reliable backstop for
- * confirming payments - unlike the browser-side /api/donations/verify call,
- * it doesn't depend on the donor's browser staying open. Mounted in
+ * confirming payments - unlike the browser-side /api/orders/verify call,
+ * it doesn't depend on the buyer's browser staying open. Mounted in
  * server.js with express.raw() so req.body is the exact bytes Razorpay
  * signed (required for signature verification).
  *
@@ -40,16 +40,16 @@ async function handleRazorpayWebhook(req, res) {
       const orderId = payment ? payment.order_id : event.payload.order.entity.id;
       const paymentId = payment ? payment.id : undefined;
 
-      const donation = await Donation.findOne({ razorpayOrderId: orderId });
-      if (donation && donation.status !== 'paid') {
-        donation.status = 'paid';
-        if (paymentId) donation.razorpayPaymentId = paymentId;
-        await donation.save();
-        console.log(`[webhook] Marked donation ${donation._id} as paid via webhook (${event.event}).`);
+      const order = await Order.findOne({ razorpayOrderId: orderId });
+      if (order && order.status !== 'paid') {
+        order.status = 'paid';
+        if (paymentId) order.razorpayPaymentId = paymentId;
+        await order.save();
+        console.log(`[webhook] Marked order ${order._id} as paid via webhook (${event.event}).`);
       }
     }
     // Other event types (payment.failed, etc.) are safe to ignore - we
-    // simply leave those donations in "created" status.
+    // simply leave those orders in "pending" status.
     res.status(200).send('ok');
   } catch (err) {
     console.error('[webhook] Error processing webhook event:', err);

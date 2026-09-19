@@ -4,23 +4,18 @@ const router = express.Router();
 const GalleryImage = require('../models/GalleryImage');
 const History = require('../models/History');
 const CommitteeMember = require('../models/CommitteeMember');
-const Donation = require('../models/Donation');
 const ContactMessage = require('../models/ContactMessage');
 const Program = require('../models/Program');
 const Announcement = require('../models/Announcement');
 const Donor = require('../models/Donor');
 const ShilapalakaPhoto = require('../models/ShilapalakaPhoto');
 const Festival = require('../models/Festival');
-const razorpayUtil = require('../utils/razorpay');
+const Product = require('../models/Product');
+const Order = require('../models/Order');
 
 // GET /
 router.get('/', async (req, res, next) => {
   try {
-    const { total, count } = await Donation.getTotalRaised();
-    const leaderboard = await Donation.getLeaderboard(10);
-    const target = res.locals.settings.donationTargetAmount || 0;
-    const percent = target > 0 ? Math.min(100, Math.round((total / target) * 100)) : 0;
-
     const tenDaysOut = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
     const upcomingPrograms = await Program.find({ isActive: true, dateTime: { $gte: new Date(), $lte: tenDaysOut } })
       .sort({ dateTime: 1 })
@@ -28,15 +23,15 @@ router.get('/', async (req, res, next) => {
       .lean();
     const announcements = await Announcement.getActive(10);
     const festivals = await Festival.getGrouped();
+    const featuredProducts = await Product.find({ isActive: true }).sort({ order: 1, createdAt: 1 }).limit(4).lean();
 
     res.render('public/home', {
       pageTitle: 'Home',
       activeNav: 'home',
-      donation: { total, count, percent, target },
-      leaderboard,
       upcomingPrograms,
       announcements,
       festivals,
+      featuredProducts,
     });
   } catch (err) {
     next(err);
@@ -162,31 +157,55 @@ router.post('/contact', async (req, res, next) => {
   }
 });
 
-// GET /donate
-router.get('/donate', async (req, res, next) => {
+// GET /products - the temple shop catalog, grouped by category
+router.get('/products', async (req, res, next) => {
   try {
-    const { total, count } = await Donation.getTotalRaised();
-    const target = res.locals.settings.donationTargetAmount || 0;
-    const percent = target > 0 ? Math.min(100, Math.round((total / target) * 100)) : 0;
-
-    res.render('public/donate', {
-      pageTitle: 'Donate',
-      activeNav: 'donate',
-      donation: { total, count, percent, target },
-      razorpayEnabled: razorpayUtil.isConfigured,
-      extraScript: '/js/donate.js',
+    const productGroups = await Product.getActiveGrouped();
+    res.render('public/products', {
+      pageTitle: 'Shop',
+      activeNav: 'products',
+      productGroups,
+      extraScript: '/js/shop.js',
     });
   } catch (err) {
     next(err);
   }
 });
 
-// GET /donate/thank-you
-router.get('/donate/thank-you', (req, res) => {
-  res.render('public/donate-thank-you', { pageTitle: 'Thank You', activeNav: 'donate' });
+// GET /cart - the cart itself lives in the browser (localStorage); this
+// page just renders the shell and js/shop.js fills it in on load.
+router.get('/cart', (req, res) => {
+  res.render('public/cart', { pageTitle: 'Your Cart', activeNav: 'products', extraScript: '/js/shop.js' });
 });
 
-// --- Static-ish policy pages (required for Razorpay merchant compliance) ---
+// GET /checkout - same idea: the order summary + form is rendered here,
+// js/shop.js reads the cart from localStorage to fill in the summary and
+// wires up the "Place Order" submit.
+router.get('/checkout', (req, res) => {
+  res.render('public/checkout', { pageTitle: 'Checkout', activeNav: 'products', extraScript: '/js/shop.js' });
+});
+
+// GET /checkout/success?order=<id> - order confirmation. If the order was
+// paid via Razorpay it's already marked 'paid' by the time the buyer lands
+// here; otherwise this page shows the UPI tap-to-pay/QR options for the
+// exact order total.
+router.get('/checkout/success', async (req, res, next) => {
+  try {
+    const order = req.query.order ? await Order.findById(req.query.order).lean() : null;
+    if (!order) {
+      return res.redirect('/products');
+    }
+    res.render('public/checkout-success', {
+      pageTitle: 'Order Placed',
+      activeNav: 'products',
+      order,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// --- Static-ish policy pages (kept for payment-gateway/compliance reasons) ---
 router.get('/privacy-policy', (req, res) => {
   res.render('public/privacy-policy', { pageTitle: 'Privacy Policy', activeNav: '' });
 });
@@ -194,7 +213,7 @@ router.get('/terms', (req, res) => {
   res.render('public/terms', { pageTitle: 'Terms & Conditions', activeNav: '' });
 });
 router.get('/refund-policy', (req, res) => {
-  res.render('public/refund-policy', { pageTitle: 'Refund & Cancellation Policy', activeNav: '' });
+  res.render('public/refund-policy', { pageTitle: 'Refund & Return Policy', activeNav: '' });
 });
 
 module.exports = router;
