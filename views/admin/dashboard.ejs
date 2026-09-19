@@ -6,15 +6,15 @@
 <div class="stat-grid">
   <div class="stat-card">
     <span class="value"><%= formatINR(totals.total) %></span>
-    <span class="label">Total Raised</span>
+    <span class="label">Total Paid Orders</span>
   </div>
   <div class="stat-card">
     <span class="value"><%= totals.count %></span>
-    <span class="label">Total Donors</span>
+    <span class="label">Paid Order Count</span>
   </div>
   <div class="stat-card">
-    <span class="value"><%= percent %>%</span>
-    <span class="label">Of Donation Goal</span>
+    <span class="value"><%= pendingOrderCount %></span>
+    <span class="label">Pending Orders</span>
   </div>
   <div class="stat-card">
     <span class="value"><%= unreadMessages %></span>
@@ -24,23 +24,23 @@
 
 <div class="panel">
   <div class="panel-header">
-    <h2>Recent Donations</h2>
-    <a href="/admin/donations" class="btn btn-outline btn-sm">View All</a>
+    <h2>Recent Orders</h2>
+    <a href="/admin/orders" class="btn btn-outline btn-sm">View All</a>
   </div>
-  <% if (!recentDonations.length) { %>
-    <p class="empty-hint">No donations recorded yet.</p>
+  <% if (!recentOrders.length) { %>
+    <p class="empty-hint">No orders yet.</p>
   <% } else { %>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Donor</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr></thead>
+        <thead><tr><th>Customer</th><th>Total</th><th>Status</th><th>Fulfillment</th><th>Date</th></tr></thead>
         <tbody>
-          <% recentDonations.forEach(function(d) { %>
+          <% recentOrders.forEach(function(o) { %>
           <tr>
-            <td><%= d.isAnonymous ? 'Anonymous Devotee' : d.name %></td>
-            <td><%= formatINR(d.amount) %></td>
-            <td><span class="badge badge-manual"><%= d.method %></span></td>
-            <td><span class="badge badge-<%= d.status %>"><%= d.status %></span></td>
-            <td><%= new Date(d.createdAt).toLocaleDateString('en-IN') %></td>
+            <td><%= o.customerName %></td>
+            <td><%= formatINR(o.totalAmount) %></td>
+            <td><span class="badge badge-<%= o.status %>"><%= o.status %></span></td>
+            <td><span class="badge badge-<%= o.fulfillment %>"><%= o.fulfillment %></span></td>
+            <td><%= new Date(o.createdAt).toLocaleDateString('en-IN') %></td>
           </tr>
           <% }) %>
         </tbody>
@@ -53,9 +53,9 @@
   <div class="panel-header"><h2>Quick Links</h2></div>
   <div class="action-row">
     <a href="/admin/settings" class="btn btn-outline btn-sm">Edit Temple Settings</a>
+    <a href="/admin/products" class="btn btn-outline btn-sm">Manage Products (<%= productCount %>)</a>
     <a href="/admin/gallery" class="btn btn-outline btn-sm">Manage Gallery (<%= galleryCount %>)</a>
     <a href="/admin/committee" class="btn btn-outline btn-sm">Manage Committee (<%= committeeCount %>)</a>
-    <a href="/admin/donations" class="btn btn-outline btn-sm">Add Manual Donation</a>
   </div>
 </div>
 
