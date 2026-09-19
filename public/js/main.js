@@ -1,6 +1,7 @@
 // Shared front-end behaviour for the public site: mobile nav, copy-to-clipboard,
-// gallery lightbox, festival countdown, and live-ish polling for the
-// donation progress bar and leaderboard. Loaded on every public page.
+// gallery lightbox, festival countdown, and the shopping cart engine (badge +
+// localStorage helpers used by js/shop.js on the shop/cart/checkout pages).
+// Loaded on every public page.
 (function () {
   'use strict';
 
@@ -141,58 +142,86 @@
     }
   });
 
-  // ---------- Live-ish progress bar + leaderboard polling ----------
-  var progressFill = document.querySelector('[data-progress-fill]');
-  var raisedEl = document.querySelector('[data-raised-amount]');
-  var percentEl = document.querySelector('[data-raised-percent]');
-  var donorCountEl = document.querySelector('[data-donor-count]');
-  var leaderboardList = document.getElementById('leaderboardList');
-  var POLL_MS = 20000;
+  // ---------- Shared cart engine (localStorage) ----------
+  // The cart lives entirely in the browser - nothing here reaches the server
+  // until checkout, and prices are always re-checked server-side at that
+  // point (routes/api.js never trusts a client-submitted price). This file
+  // loads on every public page so the nav cart badge stays current wherever
+  // the visitor is; js/shop.js (loaded only on /products, /cart and
+  // /checkout) uses window.TempleCart for the actual cart UI.
+  var CART_KEY = 'templeCart_v1';
 
-  function refreshProgress() {
-    if (!progressFill && !raisedEl) return;
-    fetch('/api/settings/public')
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        var d = data.donation || {};
-        if (progressFill) progressFill.style.width = (d.percent || 0) + '%';
-        if (raisedEl) raisedEl.textContent = formatINR(d.raised) + ' raised';
-        if (percentEl) percentEl.textContent = (d.percent || 0) + '%';
-        if (donorCountEl) donorCountEl.textContent = d.donorCount || 0;
-      })
-      .catch(function () { /* fail silently - keep last known values on screen */ });
+  function readCart() {
+    try {
+      var raw = localStorage.getItem(CART_KEY);
+      var cart = raw ? JSON.parse(raw) : [];
+      return Array.isArray(cart) ? cart : [];
+    } catch (e) {
+      return [];
+    }
   }
 
-  function refreshLeaderboard() {
-    if (!leaderboardList) return;
-    fetch('/api/leaderboard?limit=10')
-      .then(function (r) { return r.json(); })
-      .then(function (donors) {
-        if (!donors || !donors.length) {
-          leaderboardList.innerHTML = '<li class="leaderboard-empty">Be the first to donate today!</li>';
-          return;
+  function writeCart(cart) {
+    try {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    } catch (e) {
+      /* storage unavailable (private browsing etc.) - cart just won't persist */
+    }
+    updateCartBadge();
+  }
+
+  function updateCartBadge() {
+    var badge = document.getElementById('navCartBadge');
+    if (!badge) return;
+    var count = readCart().reduce(function (sum, item) { return sum + item.quantity; }, 0);
+    if (count > 0) {
+      badge.textContent = count > 99 ? '99+' : String(count);
+      badge.hidden = false;
+    } else {
+      badge.hidden = true;
+    }
+  }
+
+  window.TempleCart = {
+    get: readCart,
+    save: writeCart,
+    addItem: function (product, quantity) {
+      quantity = Math.max(1, parseInt(quantity, 10) || 1);
+      var cart = readCart();
+      var existing = null;
+      for (var i = 0; i < cart.length; i++) {
+        if (cart[i].id === product.id) { existing = cart[i]; break; }
+      }
+      if (existing) {
+        existing.quantity += quantity;
+      } else {
+        cart.push({ id: product.id, name: product.name, price: product.price, image: product.image || '', quantity: quantity });
+      }
+      writeCart(cart);
+      return cart;
+    },
+    setQuantity: function (id, quantity) {
+      quantity = Math.max(0, parseInt(quantity, 10) || 0);
+      var cart = readCart();
+      if (quantity === 0) {
+        cart = cart.filter(function (i) { return i.id !== id; });
+      } else {
+        for (var i = 0; i < cart.length; i++) {
+          if (cart[i].id === id) { cart[i].quantity = quantity; break; }
         }
-        leaderboardList.innerHTML = donors
-          .map(function (d, i) {
-            return (
-              '<li><span class="leaderboard-rank">' + (i + 1) + '</span>' +
-              '<span class="leaderboard-name">' + escapeHtml(d.name) + '</span>' +
-              '<span class="leaderboard-amount">' + formatINR(d.amount) + '</span></li>'
-            );
-          })
-          .join('');
-      })
-      .catch(function () { /* keep last known list on screen */ });
-  }
+      }
+      writeCart(cart);
+      return cart;
+    },
+    removeItem: function (id) {
+      var cart = readCart().filter(function (i) { return i.id !== id; });
+      writeCart(cart);
+      return cart;
+    },
+    clear: function () { writeCart([]); },
+    getCount: function () { return readCart().reduce(function (sum, item) { return sum + item.quantity; }, 0); },
+    getTotal: function () { return readCart().reduce(function (sum, item) { return sum + item.price * item.quantity; }, 0); },
+  };
 
-  if (progressFill || raisedEl || leaderboardList) {
-    setInterval(refreshProgress, POLL_MS);
-    setInterval(refreshLeaderboard, POLL_MS);
-    // Slight delay before the first refresh since the page already rendered
-    // fresh values on load - this just keeps them current after that.
-    setTimeout(function () {
-      refreshProgress();
-      refreshLeaderboard();
-    }, POLL_MS);
-  }
+  updateCartBadge();
 })();
