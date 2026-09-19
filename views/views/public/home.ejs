@@ -1,0 +1,220 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="hero">
+  <div class="hero-bg-zoom" style="background-image: url('<%= settings.heroImageUrl || '/images/placeholders/hero-placeholder.svg' %>');"></div>
+  <div class="hero-inner">
+    <h1><%= settings.templeName %></h1>
+    <% if (settings.tagline) { %><p class="lead"><%= settings.tagline %></p><% } %>
+    <% if (settings.locationShort) { %><p class="hero-location">&#128205; <%= settings.locationShort %></p><% } %>
+    <div class="hero-divider"><span></span><span class="hero-divider-dot"></span><span></span></div>
+    <div class="hero-actions">
+      <a href="/products" class="btn btn-primary">Shop Now</a>
+      <a href="/gallery" class="btn btn-outline">View Gallery</a>
+    </div>
+  </div>
+</section>
+
+<% if (settings.highlights && settings.highlights.length) { %>
+<section class="highlights-strip">
+  <div class="container">
+    <div class="highlights-grid">
+      <% settings.highlights.forEach(function(h) { %>
+        <div class="highlight-card">
+          <span class="highlight-icon">
+            <% if (h.icon === 'families') { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 19c.6-2.8 2.8-4.5 5.5-4.5s4.9 1.7 5.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M16 11a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2Z" stroke="currentColor" stroke-width="1.5"/><path d="M15 14.7c2.3.3 4 1.8 4.5 4.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <% } else if (h.icon === 'calendar') { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 9.5h17M8 3v3.5M16 3v3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <% } else if (h.icon === 'globe') { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5S9.6 5.8 12 3.5Z" stroke="currentColor" stroke-width="1.5"/></svg>
+            <% } else if (h.icon === 'heart') { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20s-7.5-4.7-10-9.3C.5 7.4 2.2 4 5.7 4c2 0 3.4 1 4.3 2.3C11 5 12.3 4 14.3 4c3.5 0 5.2 3.4 3.7 6.7C19.5 15.3 12 20 12 20Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <% } else if (h.icon === 'star') { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6-4.5-4.1 6-.7L12 3.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <% } else { %>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 21V10.5L12 4l8 6.5V21" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 21v-6h6v6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 4v3.2M9.5 6.2h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <% } %>
+          </span>
+          <strong class="highlight-value"><%= h.value %></strong>
+          <span class="highlight-label"><%= h.label %></span>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<% if (featuredProducts && featuredProducts.length) { %>
+<section class="section section-alt" style="padding-bottom:56px;">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Temple Shop</span>
+      <h2>Pooja Items &amp; Temple Merchandise</h2>
+      <div class="divider-motif">&#128330;</div>
+      <p>Bring home blessed pooja essentials, books and temple merchandise.</p>
+    </div>
+    <div class="grid grid-4">
+      <% featuredProducts.forEach(function(p) { %>
+        <div class="card product-card">
+          <img src="<%= p.imageUrl || '/images/placeholders/gallery-temple.svg' %>" alt="<%= p.name %>">
+          <div class="card-body">
+            <h3 class="product-name" style="font-size:1.05rem;"><%= p.name %></h3>
+            <p class="product-price" style="margin:0;"><%= formatINR(p.price) %></p>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <p class="text-center" style="margin-top:28px;"><a href="/products" class="btn btn-primary">Visit the Shop &rarr;</a></p>
+  </div>
+</section>
+<% } %>
+
+<% if (announcements && announcements.length) { %>
+<section class="section announcements-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Stay Informed</span>
+      <h2>&#128226; Latest Announcements</h2>
+      <div class="divider-motif">&#10022;</div>
+    </div>
+    <div class="announcement-list">
+      <% announcements.forEach(function(a) {
+           var isLong = a.message && a.message.length > 130;
+           var preview = isLong ? a.message.slice(0, 130).trim() + '…' : a.message;
+      %>
+        <div class="announcement-card">
+          <div class="announcement-head">
+            <span class="announcement-dot" aria-hidden="true"></span>
+            <span class="announcement-title"><%= a.title %></span>
+          </div>
+          <% if (a.message) { %>
+            <p class="announcement-preview"><%= preview %></p>
+            <% if (isLong) { %>
+              <p class="announcement-full" hidden><%= a.message %></p>
+              <button type="button" class="announcement-toggle-link" data-more="Read more" data-less="Show less">Read more <span class="chev">&#9662;</span></button>
+            <% } %>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<% if (upcomingPrograms && upcomingPrograms.length) { %>
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Happening Soon</span>
+      <h2>Programs in the Next 10 Days</h2>
+      <div class="divider-motif">&#128330;</div>
+    </div>
+    <div class="grid grid-3">
+      <% upcomingPrograms.forEach(function(p) { %>
+        <div class="card">
+          <img src="<%= p.imageUrl || '/images/placeholders/gallery-diya.svg' %>" alt="<%= p.title %>" style="aspect-ratio:16/10; object-fit:cover; width:100%;">
+          <div class="card-body">
+            <span class="tag"><%= new Date(p.dateTime).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' }) %></span>
+            <h3 style="margin:8px 0 4px;"><%= p.title %></h3>
+            <% if (p.location) { %><p class="muted" style="margin:0;">&#128205; <%= p.location %></p><% } %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <p class="text-center" style="margin-top:24px;"><a href="/programs" class="btn btn-outline" style="border-color:var(--maroon); color:var(--maroon);">View All Programs &rarr;</a></p>
+  </div>
+</section>
+<% } %>
+
+<% if (festivals && (festivals.ongoing.length || festivals.upcoming.length)) { %>
+<section class="section">
+  <div class="container">
+
+    <% if (festivals.ongoing.length) { %>
+    <div class="section-header">
+      <span class="eyebrow">Happening Now</span>
+      <h2>&#127881; Ongoing Festivals</h2>
+      <div class="divider-motif">&#10022;</div>
+    </div>
+    <div class="grid grid-2" style="margin-bottom: <%= festivals.upcoming.length ? '40px' : '0' %>;">
+      <% festivals.ongoing.forEach(function(f) { %>
+        <div class="leaderboard-card countdown-card"
+             data-target="<%= new Date(f.endDate || f.startDate).toISOString() %>"
+             data-done-message="&#127881; <%= f.name %> has concluded.">
+          <p class="countdown-name"><strong><%= f.name %></strong></p>
+          <p class="countdown-days-to-go"><%= f.daysToGo %> day<%= f.daysToGo === 1 ? '' : 's' %> left</p>
+          <div class="countdown-grid">
+            <div class="countdown-unit"><span class="num" data-unit="days">--</span><span class="label">Days</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="hours">--</span><span class="label">Hours</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="minutes">--</span><span class="label">Minutes</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="seconds">--</span><span class="label">Seconds</span></div>
+          </div>
+          <% if (f.description) { %><p class="muted" style="margin-top:10px;"><%= f.description %></p><% } %>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
+
+    <% if (festivals.upcoming.length) { %>
+    <div class="section-header">
+      <span class="eyebrow">Mark Your Calendar</span>
+      <h2>Upcoming Festivals</h2>
+      <div class="divider-motif">&#128330;</div>
+    </div>
+    <div class="grid grid-2">
+      <% festivals.upcoming.forEach(function(f) { %>
+        <div class="leaderboard-card countdown-card"
+             data-target="<%= new Date(f.startDate).toISOString() %>"
+             data-done-message="&#127881; <%= f.name %> is here! Join us for the celebrations.">
+          <p class="countdown-name">Counting down to <strong><%= f.name %></strong></p>
+          <p class="countdown-days-to-go"><%= f.daysToGo %> day<%= f.daysToGo === 1 ? '' : 's' %> to go</p>
+          <div class="countdown-grid">
+            <div class="countdown-unit"><span class="num" data-unit="days">--</span><span class="label">Days</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="hours">--</span><span class="label">Hours</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="minutes">--</span><span class="label">Minutes</span></div>
+            <div class="countdown-unit"><span class="num" data-unit="seconds">--</span><span class="label">Seconds</span></div>
+          </div>
+          <% if (f.description) { %><p class="muted" style="margin-top:10px;"><%= f.description %></p><% } %>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
+
+  </div>
+</section>
+<% } %>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Our Story</span>
+      <h2>About <%= settings.templeName %></h2>
+      <div class="divider-motif">&#128157;</div>
+    </div>
+    <% if (settings.aboutImageUrl) { %>
+    <div class="grid grid-2" style="align-items:center;">
+      <img src="<%= settings.aboutImageUrl %>" alt="<%= settings.templeName %>" style="width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:var(--radius-lg); box-shadow:var(--shadow-soft);">
+      <div>
+        <p><%= settings.aboutShort %></p>
+        <a href="/history" class="btn btn-outline" style="border-color:var(--maroon); color:var(--maroon);">Read Full History &rarr;</a>
+      </div>
+    </div>
+    <% } else { %>
+    <p class="text-center" style="max-width:760px;margin:0 auto 20px;"><%= settings.aboutShort %></p>
+    <p class="text-center"><a href="/history" class="btn btn-outline" style="border-color:var(--maroon); color:var(--maroon);">Read Full History &rarr;</a></p>
+    <% } %>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Our Committee</span>
+      <h2>Meet the People Behind the Temple</h2>
+      <div class="divider-motif">&#128330;</div>
+    </div>
+    <p class="text-center"><a href="/committee" class="btn btn-outline" style="border-color:var(--maroon); color:var(--maroon);">View Full Committee &rarr;</a></p>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>

@@ -1,0 +1,49 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Temple Shop</span>
+      <h2>Pooja Items &amp; Temple Merchandise</h2>
+      <div class="divider-motif">&#128330;</div>
+      <p>Bring home blessed pooja essentials, books, clothing and temple merchandise. Add what you need and check out below.</p>
+    </div>
+
+    <% if (!productGroups.length) { %>
+      <div class="empty-state"><p>Our shop is being stocked - please check back soon.</p></div>
+    <% } else { %>
+      <% productGroups.forEach(function(group) { %>
+        <div style="margin-bottom:48px;">
+          <h3 style="text-align:center; margin-bottom:24px;"><%= group.category %></h3>
+          <div class="grid grid-3">
+            <% group.products.forEach(function(p) { %>
+              <div class="card product-card">
+                <img src="<%= p.imageUrl || '/images/placeholders/gallery-temple.svg' %>" alt="<%= p.name %>">
+                <div class="card-body">
+                  <h4 class="product-name"><%= p.name %></h4>
+                  <% if (p.description) { %><p class="product-desc"><%= p.description %></p><% } %>
+                  <p class="product-price"><%= formatINR(p.price) %></p>
+                  <div class="product-card-footer"
+                       data-product-row
+                       data-product-id="<%= p._id %>"
+                       data-product-name="<%= p.name %>"
+                       data-product-price="<%= p.price %>"
+                       data-product-image="<%= p.imageUrl || '/images/placeholders/gallery-temple.svg' %>">
+                    <div class="qty-stepper">
+                      <button type="button" data-qty-down aria-label="Decrease quantity">&minus;</button>
+                      <span data-qty-value>1</span>
+                      <button type="button" data-qty-up aria-label="Increase quantity">+</button>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm add-to-cart-btn" data-add-to-cart>Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>

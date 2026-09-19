@@ -1,0 +1,30 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container" style="max-width:900px;">
+    <div class="section-header">
+      <span class="eyebrow">Your Order</span>
+      <h2>Shopping Cart</h2>
+      <div class="divider-motif">&#128330;</div>
+    </div>
+
+    <div id="cartEmpty" class="empty-state" hidden>
+      <p>Your cart is empty.</p>
+      <p><a href="/products" class="btn btn-primary">Browse the Shop</a></p>
+    </div>
+
+    <div id="cartFilled" class="grid grid-2" style="align-items:start;" hidden>
+      <div id="cartItems"></div>
+      <div class="cart-summary">
+        <div class="cart-summary-row">
+          <span>Total</span>
+          <span class="amount" id="cartTotal">&#8377;0</span>
+        </div>
+        <a href="/checkout" class="btn btn-primary btn-block">Proceed to Checkout</a>
+        <p class="text-center" style="margin:14px 0 0;"><a href="/products" style="color:var(--cream-dark); font-size:0.85rem;">&larr; Continue Shopping</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>

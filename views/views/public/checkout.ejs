@@ -1,0 +1,62 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container" style="max-width:900px;">
+    <div class="section-header">
+      <span class="eyebrow">Almost There</span>
+      <h2>Checkout</h2>
+      <div class="divider-motif">&#128330;</div>
+    </div>
+
+    <div id="checkoutEmpty" class="empty-state" hidden>
+      <p>Your cart is empty.</p>
+      <p><a href="/products" class="btn btn-primary">Browse the Shop</a></p>
+    </div>
+
+    <div id="checkoutFilled" class="grid grid-2" style="align-items:start;" hidden>
+      <div class="card">
+        <div class="card-body">
+          <div id="checkoutError" class="alert alert-error" hidden></div>
+          <form id="checkoutForm">
+            <div class="form-group">
+              <label for="nameInput">Your Name</label>
+              <input type="text" id="nameInput" maxlength="100" required>
+            </div>
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="phoneInput">Phone</label>
+                <input type="tel" id="phoneInput" maxlength="15" required>
+              </div>
+              <div class="form-group">
+                <label for="emailInput">Email (optional)</label>
+                <input type="email" id="emailInput" maxlength="200">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="addressInput">Delivery Address</label>
+              <textarea id="addressInput" rows="3" maxlength="500" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="noteInput">Note (optional)</label>
+              <textarea id="noteInput" rows="2" maxlength="500"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="placeOrderBtn">Place Order</button>
+            <p class="muted text-center" style="margin-top:14px; font-size:0.82rem;">&#128274; We'll contact you on this phone number to confirm delivery.</p>
+          </form>
+        </div>
+      </div>
+
+      <div class="cart-summary">
+        <h3 style="color:var(--gold-light); margin-bottom:14px;">Order Summary</h3>
+        <div id="checkoutSummaryLines"></div>
+        <div class="checkout-total-row">
+          <span>Total</span>
+          <span id="checkoutTotal">&#8377;0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<%- include('../partials/_layout-bottom') %>

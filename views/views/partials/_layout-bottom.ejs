@@ -1,0 +1,73 @@
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4><%= settings.templeName %></h4>
+        <p class="muted" style="color:var(--cream-dark); opacity:0.85;"><%= settings.aboutShort %></p>
+        <% if (settings.socialLinks && (settings.socialLinks.facebook || settings.socialLinks.instagram || settings.socialLinks.youtube)) { %>
+        <div class="social-row">
+          <% if (settings.socialLinks.facebook) { %><a href="<%= settings.socialLinks.facebook %>" target="_blank" rel="noopener" aria-label="Facebook">f</a><% } %>
+          <% if (settings.socialLinks.instagram) { %><a href="<%= settings.socialLinks.instagram %>" target="_blank" rel="noopener" aria-label="Instagram">ig</a><% } %>
+          <% if (settings.socialLinks.youtube) { %><a href="<%= settings.socialLinks.youtube %>" target="_blank" rel="noopener" aria-label="YouTube">yt</a><% } %>
+        </div>
+        <% } %>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="/products">Shop</a></li>
+          <li><a href="/gallery">Gallery</a></li>
+          <li><a href="/history">Temple History</a></li>
+          <li><a href="/shilapalaka">Shilapalaka</a></li>
+          <li><a href="/committee">Committee</a></li>
+          <li><a href="/donors">Donors</a></li>
+          <li><a href="/contact">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul class="footer-links">
+          <li><%= settings.address %></li>
+          <li><a href="tel:<%= settings.phone.replace(/\s+/g,'') %>"><%= settings.phone %></a></li>
+          <li><a href="mailto:<%= settings.email %>"><%= settings.email %></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <%= new Date().getFullYear() %> <%= settings.templeName %>. All rights reserved.</span>
+      <span>
+        <a href="/privacy-policy">Privacy Policy</a> &middot;
+        <a href="/terms">Terms</a> &middot;
+        <a href="/refund-policy">Refund Policy</a> &middot;
+        <a href="/admin/login">Admin</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<div class="fab-stack">
+  <% if (settings.whatsappNumber) { %>
+  <a class="fab fab-whatsapp" target="_blank" rel="noopener"
+     href="https://wa.me/<%= settings.whatsappNumber.replace(/\D/g,'') %>?text=<%= encodeURIComponent('Namaste, I have a question about ' + settings.templeName) %>">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3Z" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 8.8c.2-.6.5-.6.8-.6h.6c.2 0 .4 0 .6.5s.7 1.6.7 1.8.1.3 0 .5-.2.3-.4.5-.3.3-.1.6a6 6 0 0 0 2.6 2.3c.3.1.5.1.6-.1s.7-.7.9-1 .4-.2.6-.1l1.5.7c.2.1.4.2.4.4s0 1-.4 1.5-1.2 1-2 1-2.2-.3-3.7-1.5a8.4 8.4 0 0 1-2.6-3c-.2-.4-.2-.6-.2-.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <span class="fab-label">WhatsApp</span>
+  </a>
+  <% } %>
+  <a class="fab fab-shop" href="/products">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 8h12l-1 12.2a2 2 0 0 1-2 1.8H9a2 2 0 0 1-2-1.8L6 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <span class="fab-label">Shop Now</span>
+  </a>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img src="" alt="" id="lightboxImg">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script src="/js/main.js"></script>
+<% if (typeof extraScript !== 'undefined') { %><script src="<%= extraScript %>"></script><% } %>
+</body>
+</html>

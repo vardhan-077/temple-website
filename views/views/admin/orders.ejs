@@ -1,0 +1,67 @@
+<%- include('../partials/_admin-layout-top') %>
+
+<h1>Orders</h1>
+<p class="hint" style="margin-top:-8px;">Orders placed through the shop. When payment is by UPI, confirm it against your bank/UPI app (the buyer is asked to share a screenshot), then mark it paid here.</p>
+
+<div class="stat-grid" style="margin-bottom:24px;">
+  <div class="stat-card">
+    <span class="value"><%= formatINR(totals.total) %></span>
+    <span class="label">Total Paid Orders</span>
+  </div>
+  <div class="stat-card">
+    <span class="value"><%= totals.count %></span>
+    <span class="label">Paid Order Count</span>
+  </div>
+</div>
+
+<% if (!orders.length) { %>
+  <p class="empty-hint">No orders yet.</p>
+<% } else { %>
+  <% orders.forEach(function(o) { %>
+    <div class="panel">
+      <div class="panel-header">
+        <h2><%= o.customerName %> &middot; <%= formatINR(o.totalAmount) %></h2>
+        <span>
+          <span class="badge badge-<%= o.status %>"><%= o.status %></span>
+          <span class="badge badge-<%= o.method %>"><%= o.method %></span>
+        </span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Item</th><th>Qty</th><th>Price</th></tr></thead>
+          <tbody>
+            <% o.items.forEach(function(it) { %>
+              <tr><td><%= it.name %></td><td><%= it.quantity %></td><td><%= formatINR(it.price) %></td></tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <p class="hint" style="margin:12px 0 4px;">
+        &#128222; <%= o.phone %><% if (o.email) { %> &middot; &#9993; <%= o.email %><% } %><br>
+        &#128205; <%= o.address %>
+        <% if (o.note) { %><br>&#128172; <%= o.note %><% } %>
+      </p>
+      <p class="hint">Placed <%= new Date(o.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) %></p>
+
+      <div class="action-row" style="margin-top:10px;">
+        <% if (o.status !== 'paid') { %>
+        <form method="POST" action="/admin/orders/<%= o._id %>/mark-paid">
+          <button type="submit" class="btn btn-primary btn-sm">Mark as Paid</button>
+        </form>
+        <% } %>
+        <form method="POST" action="/admin/orders/<%= o._id %>/fulfillment">
+          <select name="fulfillment" onchange="this.form.submit()">
+            <% ['pending', 'packed', 'shipped', 'delivered'].forEach(function(s) { %>
+              <option value="<%= s %>" <%= o.fulfillment === s ? 'selected' : '' %>><%= s.charAt(0).toUpperCase() + s.slice(1) %></option>
+            <% }) %>
+          </select>
+        </form>
+        <form method="POST" action="/admin/orders/<%= o._id %>/delete" data-confirm="Delete this order? This cannot be undone.">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/_admin-layout-bottom') %>

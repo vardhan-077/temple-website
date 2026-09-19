@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= typeof pageTitle !== 'undefined' ? pageTitle + ' | ' + settings.templeName : settings.templeName %></title>
+<meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : settings.aboutShort %>">
+<link rel="icon" href="<%= settings.logoUrl || '/images/placeholders/logo-placeholder.svg' %>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<header class="navbar">
+  <div class="container">
+    <a href="/" class="navbar-brand">
+      <img src="<%= settings.logoUrl || '/images/placeholders/logo-placeholder.svg' %>" alt="<%= settings.templeName %> logo">
+      <span>
+        <span class="name"><%= settings.templeName %></span>
+        <span class="tagline"><%= settings.tagline %></span>
+      </span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
+    <nav class="nav-links" id="navLinks">
+      <a href="/" class="<%= activeNav === 'home' ? 'active' : '' %>">Home</a>
+      <a href="/products" class="<%= activeNav === 'products' ? 'active' : '' %>">Shop</a>
+      <a href="/gallery" class="<%= activeNav === 'gallery' ? 'active' : '' %>">Gallery</a>
+      <a href="/history" class="<%= activeNav === 'history' ? 'active' : '' %>">History</a>
+      <a href="/programs" class="<%= activeNav === 'programs' ? 'active' : '' %>">Programs</a>
+      <a href="/shilapalaka" class="<%= activeNav === 'shilapalaka' ? 'active' : '' %>">Shilapalaka</a>
+      <a href="/committee" class="<%= activeNav === 'committee' ? 'active' : '' %>">Committee</a>
+      <a href="/donors" class="<%= activeNav === 'donors' ? 'active' : '' %>">Donors</a>
+      <a href="/contact" class="<%= activeNav === 'contact' ? 'active' : '' %>">Contact</a>
+      <a href="/cart" class="nav-cart-link" aria-label="View cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20.5" r="1.4" fill="currentColor"/><circle cx="17.5" cy="20.5" r="1.4" fill="currentColor"/></svg>
+        <span class="nav-cart-badge" id="navCartBadge" hidden>0</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content">

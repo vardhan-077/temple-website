@@ -1,0 +1,91 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container" style="max-width:720px;">
+
+    <% if (order.status === 'paid') { %>
+      <div class="section-header">
+        <span class="eyebrow">Thank You</span>
+        <h2>Order Confirmed!</h2>
+        <div class="divider-motif">&#128330;</div>
+        <p>Your payment was received. We'll get your order ready and reach out to arrange delivery.</p>
+      </div>
+    <% } else if (order.method === 'upi') { %>
+      <div class="section-header">
+        <span class="eyebrow">One Last Step</span>
+        <h2>Complete Your Payment</h2>
+        <div class="divider-motif">&#128330;</div>
+        <p>Your order is placed! Please pay <strong><%= formatINR(order.totalAmount) %></strong> via UPI to confirm it.</p>
+      </div>
+    <% } else { %>
+      <div class="section-header">
+        <span class="eyebrow">Almost Done</span>
+        <h2>Confirming Your Payment&hellip;</h2>
+        <div class="divider-motif">&#128330;</div>
+        <p>We're confirming your payment. If this takes more than a few minutes, please contact us with your Order ID below.</p>
+      </div>
+    <% } %>
+
+    <% if (order.status !== 'paid' && order.method === 'upi') {
+      var upiButtonsShown = settings.upiId && settings.upiId !== 'yourtemple@upi';
+      var upiParams = upiButtonsShown
+        ? 'pa=' + encodeURIComponent(settings.upiId) +
+          '&pn=' + encodeURIComponent(settings.templeName) +
+          '&am=' + encodeURIComponent(order.totalAmount.toFixed(2)) +
+          '&cu=INR&tn=' + encodeURIComponent('Order ' + order._id)
+        : '';
+    %>
+    <div class="card" style="margin-bottom:28px;">
+      <div class="card-body qr-wrap">
+        <% if (upiButtonsShown) { %>
+        <a class="btn btn-primary btn-block" href="upi://pay?<%= upiParams %>">Pay <%= formatINR(order.totalAmount) %> via any UPI App</a>
+        <div class="upi-app-row">
+          <a class="btn btn-maroon btn-sm" href="tez://upi/pay?<%= upiParams %>">Google Pay</a>
+          <a class="btn btn-maroon btn-sm" href="phonepe://pay?<%= upiParams %>">PhonePe</a>
+          <a class="btn btn-maroon btn-sm" href="paytmmp://pay?<%= upiParams %>">Paytm</a>
+        </div>
+        <p class="muted" style="margin-top:10px; font-size:0.78rem;">Works on a phone with the app installed. On a computer, scan the QR code below instead.</p>
+        <% } %>
+
+        <div class="<%= upiButtonsShown ? 'upi-tap-pay' : '' %>">
+          <% if (upiButtonsShown) { %><p class="upi-tap-label">Or scan to pay</p><% } %>
+          <img src="<%= settings.upiQrImageUrl || '/images/placeholders/upi-qr-placeholder.svg' %>" alt="UPI QR code">
+          <div class="copy-row" style="justify-content:center;">
+            <span><%= settings.upiId %></span>
+            <button class="copy-btn" data-copy-text="<%= settings.upiId %>">Copy UPI ID</button>
+          </div>
+          <p class="muted" style="margin-top:10px; font-size:0.85rem;">Scanning the QR won't fill in the amount automatically - please enter <strong><%= formatINR(order.totalAmount) %></strong> yourself.</p>
+          <p class="muted" style="margin-top:14px; font-size:0.85rem;">After paying, please share a screenshot with us via WhatsApp or the Contact page along with your Order ID so we can confirm it and start preparing your order.</p>
+        </div>
+      </div>
+    </div>
+    <% } %>
+
+    <div class="card">
+      <div class="card-body">
+        <h3 style="margin-bottom:14px;">Order Details</h3>
+        <p class="muted" style="margin-bottom:16px; font-size:0.85rem;">Order ID: <strong style="color:var(--ink);"><%= order._id %></strong></p>
+        <div style="overflow-x:auto;">
+          <table class="plain-table">
+            <thead><tr><th>Item</th><th>Qty</th><th>Price</th></tr></thead>
+            <tbody>
+              <% order.items.forEach(function(it) { %>
+              <tr><td><%= it.name %></td><td><%= it.quantity %></td><td><%= formatINR(it.price * it.quantity) %></td></tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <p style="text-align:right; font-weight:700; font-size:1.1rem; color:var(--maroon); margin-top:12px;">Total: <%= formatINR(order.totalAmount) %></p>
+        <hr style="border:none; border-top:1px solid var(--cream-dark); margin:18px 0;">
+        <p style="margin:0 0 4px;"><strong><%= order.customerName %></strong></p>
+        <p class="muted" style="margin:0 0 4px;">&#128222; <%= order.phone %><% if (order.email) { %> &middot; &#9993; <%= order.email %><% } %></p>
+        <p class="muted" style="margin:0;">&#128205; <%= order.address %></p>
+        <% if (order.note) { %><p class="muted" style="margin:8px 0 0;">&#128172; <%= order.note %></p><% } %>
+      </div>
+    </div>
+
+    <p class="text-center" style="margin-top:28px;"><a href="/products" class="btn btn-outline" style="border-color:var(--maroon); color:var(--maroon);">&larr; Continue Shopping</a></p>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>
