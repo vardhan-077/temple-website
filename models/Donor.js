@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 // Honors donors and contributors to the temple - construction-era donors,
 // major patrons, and special-purpose gifts (the idol itself, the idol's
-// vastra/clothing, and so on). This is an admin-curated honor roll, separate
-// from the live online-donation leaderboard in models/Donation.js.
+// vastra/clothing, and so on). This is an admin-curated honor roll, entirely
+// independent of the temple shop (models/Product.js, models/Order.js).
 const donorSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
