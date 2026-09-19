@@ -1,25 +1,25 @@
 # Temple Website
 
 A complete, self-hosted website for a temple: dynamic settings, a year-by-year
-photo gallery, temple history timeline, committee directory, Razorpay-powered
-online donations, a live-ish donation leaderboard, festival countdown, and a
-mobile-friendly admin panel to manage all of it — no code changes needed for
-day-to-day updates.
+photo gallery, temple history timeline, committee directory, an online shop
+for pooja items/merchandise with cart & checkout (Razorpay or UPI tap-to-pay),
+a donor honor roll, festival countdown, and a mobile-friendly admin panel to
+manage all of it — no code changes needed for day-to-day updates.
 
 ## Features
 
-- **Dynamic temple settings** — name, tagline, address, phone/email/WhatsApp, target donation amount, all editable from the admin panel.
-- **Donation progress bar** that updates automatically as donations come in.
-- **Bank details + UPI display**, with a QR code and one-tap copy buttons.
-- **Razorpay donations** — secure server-side order creation and payment verification, plus a webhook for reliable confirmation.
-- **Live donation leaderboard** (top donors), with an anonymous-donation option and an admin visibility toggle per entry.
+- **Dynamic temple settings** — name, tagline, address, phone/email/WhatsApp, bank/UPI details, all editable from the admin panel.
+- **Temple shop** — a product catalog (pooja items, merchandise, books, clothing, jewellery replicas, grouped by category) with a client-side cart and full checkout.
+- **Checkout via Razorpay or UPI** — if Razorpay keys are configured, checkout uses Razorpay's in-browser payment flow (server-side order creation + signature verification, plus a webhook for reliable confirmation); otherwise it automatically falls back to UPI tap-to-pay buttons (Google Pay/PhonePe/Paytm/any UPI app) and a QR code, pre-filled with the exact order amount.
+- **Admin Orders panel** — every order with items, customer/delivery details, payment status, and a fulfillment tracker (pending → packed → shipped → delivered).
+- **Donor honor roll** (separate, admin-curated) for founding/construction-era donors and major patrons — not tied to online payments.
 - **Photo galleries grouped by year**, with a lightbox viewer.
 - **Temple history** page with an editable story and a timeline of milestones.
 - **Upcoming Programs** page — pujas, festivals and events with date/time/location, automatically highlighted on the homepage when they fall within the next 10 days.
 - **Latest Announcements** strip on the homepage — short, undated notices with an automatic "Read more" expand link for longer messages.
 - **Committee directory** with photos, roles and contact numbers.
 - **Festival countdown timer**, fully configurable (name + date/time).
-- **Floating "Donate Now" and WhatsApp buttons** on every page.
+- **Floating "Shop Now" and WhatsApp buttons** on every page.
 - **Contact form**, saved to the admin panel (no email server required).
 - **Mobile-friendly admin panel** for everything above, protected by login.
 - Required legal pages for payment-gateway compliance: Privacy Policy, Terms, Refund/Cancellation Policy.
@@ -83,14 +83,15 @@ for the admin panel. **Log in and change the seeded password immediately**
 
 Everything is editable from the admin panel — you don't need to touch code:
 
-- **Admin → Temple Settings**: name, address, contact info, donation goal, bank/UPI details, festival countdown, logo, hero photo, social links.
+- **Admin → Temple Settings**: name, address, contact info, bank/UPI details, festival countdown, logo, hero photo, social links.
 - **Admin → Gallery**: upload photos, tagged by year.
 - **Admin → History**: your temple's story and a timeline of milestones. Each milestone can have an optional historical photo attached — upload one when adding a milestone, or later use "Edit" to add/replace it, "Remove Photo" to drop just the image, or "Delete" to remove the whole milestone.
 - **Admin → Programs**: upcoming pujas/festivals/events (name, date & time, location, description, optional photo). Anything within the next 10 days shows automatically on the homepage; the full list lives at `/programs`. Use "Hide from site" to pull a program off the public pages without deleting it.
 - **Admin → Announcements**: short notices with no date (e.g. "Temple closed for renovation"). Add a title and, optionally, a longer message — messages over ~130 characters automatically get a "Read more" expand link on the homepage. Use "Hide from site" to pull one down temporarily, or Delete to remove it for good. The "Short Location" field for the homepage banner lives under Admin → Temple Settings → General Information.
 - **Admin → Committee**: members, roles, photos.
-- **Admin → Donations → Add Manual Donation**: record real donors (cash, cheque, bank transfer, or any offline gift) so they count toward the goal and appear on the public leaderboard — separate from the Committee list. Toggle "Visible on Leaderboard" per entry, or turn a donation anonymous to show "Anonymous Devotee" publicly while you still keep the real name privately in the admin table.
-- **Admin → Donations**: see all donations, and manually add offline (cash/cheque/bank-transfer) donations so they count toward the goal and leaderboard.
+- **Admin → Products**: add/edit items in the shop (name, price, description, category, photo, display order). Use "Hide from site" for anything sold out instead of deleting it.
+- **Admin → Orders**: see every order placed through the shop, mark UPI orders as paid once you've confirmed the payment, and update each order's fulfillment status (pending/packed/shipped/delivered).
+- **Admin → Donors**: a manually curated honor roll for founding/construction-era donors and major patrons (idol donor, vastra donor, etc.) - independent of the shop, for historical/offline recognition.
 - **Admin → Messages**: everything submitted through the public Contact form.
 
 The Privacy Policy, Terms, and Refund Policy pages (linked in the footer)
@@ -100,7 +101,7 @@ templates, not a substitute for legal advice specific to your trust.
 
 ---
 
-## 3. Setting up Razorpay (online donations)
+## 3. Setting up Razorpay (online payments for the shop)
 
 1. Create a free account at [dashboard.razorpay.com](https://dashboard.razorpay.com/) if you don't have one.
 2. While your account is in **Test Mode** (the default for a new account), go to **Settings → API Keys** and generate a key pair. Put them in `.env`:
@@ -108,7 +109,7 @@ templates, not a substitute for legal advice specific to your trust.
    RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxx
    RAZORPAY_KEY_SECRET=xxxxxxxxxxxxxxxxxxxxxxxx
    ```
-3. Restart the server. The Donate page will now show the "Pay Online" tab and accept test payments — use [Razorpay's published test card/UPI numbers](https://razorpay.com/docs/payments/payments/test-card-upi-details/) to try a full payment end to end.
+3. Restart the server. Checkout will now use Razorpay's in-browser payment flow and accept test payments — use [Razorpay's published test card/UPI numbers](https://razorpay.com/docs/payments/payments/test-card-upi-details/) to try a full order end to end.
 4. Set up the webhook (recommended — it's what confirms a payment even if a donor closes their browser right after paying):
    - In the Razorpay dashboard, go to **Settings → Webhooks → Add New Webhook**.
    - Webhook URL: `https://<your-domain>/api/razorpay/webhook`
@@ -116,9 +117,9 @@ templates, not a substitute for legal advice specific to your trust.
    - Choose a secret, and put it in `.env` as `RAZORPAY_WEBHOOK_SECRET`.
 5. **Going live**: Razorpay will need your trust/organization's KYC documents before it issues live keys (this is a regulatory requirement for all Indian payment aggregators, not something specific to this site). Once approved, switch `RAZORPAY_KEY_ID`/`RAZORPAY_KEY_SECRET` to your live keys (`rzp_live_...`) and update the webhook with your live-mode secret. Razorpay's KYC review typically also checks that your site has visible Privacy/Terms/Refund policy pages and clear contact details — this site already has all of those.
 
-Without any Razorpay keys configured, the site still works fully — the
-"Pay Online" tab shows a friendly message and visitors can use the Bank
-Transfer / UPI tab instead.
+Without any Razorpay keys configured, the site still works fully — checkout
+automatically falls back to UPI tap-to-pay buttons and a QR code, pre-filled
+with the exact order amount, shown on the order confirmation page.
 
 ---
 
@@ -131,8 +132,8 @@ Transfer / UPI tab instead.
 5. Click **Connect → Drivers**, copy the connection string (it looks like `mongodb+srv://<user>:<password>@<cluster>.mongodb.net/`), and put it in `.env`/your host's environment variables as `MONGODB_URI` — add your database name at the end, e.g. `.../temple-website?retryWrites=true&w=majority`.
 
 The free M0 tier (512MB storage) is comfortably enough for this site's data
-(donations, settings, gallery/committee metadata — photos themselves are
-better kept out of MongoDB; see the Cloudinary section below).
+(products, orders, settings, gallery/committee metadata — photos themselves
+are better kept out of MongoDB; see the Cloudinary section below).
 
 ---
 
@@ -238,7 +239,7 @@ A short checklist:
 - [ ] Set real bank details and a real UPI ID (Admin → Settings) and uploaded your actual UPI QR code.
 - [ ] Added MongoDB Atlas + (if needed) Cloudinary so data and photos persist reliably.
 - [ ] Switched Razorpay from test keys to live keys after KYC approval, and re-pointed the webhook at the live secret.
-- [ ] Made at least one real, small end-to-end test donation once live keys are active.
+- [ ] Placed at least one real, small end-to-end test order once live keys are active.
 - [ ] Set a custom domain and confirmed the site loads over HTTPS (required for Razorpay Checkout in production).
 
 ### Tightening security before you go fully live
@@ -248,13 +249,13 @@ Razorpay orders are created and payment signatures verified **server-side
 only** (the secret key never reaches the browser), admin passwords are
 hashed with bcrypt, session cookies are `httpOnly` + `SameSite=Lax` (which
 blocks the common cross-site request forgery patterns), and there's rate
-limiting on login and donation-creation endpoints.
+limiting on login and order-creation endpoints.
 
 One thing is intentionally left for you to enable once you've tested live
 payments: a strict Content-Security-Policy (CSP) header. It's off by
 default (see the comment in `server.js`) because a mistuned CSP can silently
-block the Razorpay Checkout script/iframe, and a broken donate button is
-worse than a missing header. Once payments work end-to-end on your domain,
+block the Razorpay Checkout script/iframe, and a broken checkout is worse
+than a missing header. Once payments work end-to-end on your domain,
 you can turn on `helmet`'s `contentSecurityPolicy` option, allowlisting at
 least `checkout.razorpay.com` and `api.razorpay.com` for `script-src`,
 `connect-src` and `frame-src`, and `fonts.googleapis.com`/`fonts.gstatic.com`
@@ -267,9 +268,9 @@ for fonts.
 ```
 api/index.js    Vercel serverless entry point (delegates to server.js)
 config/         Database + Cloudinary configuration
-models/         Mongoose schemas (Settings, Donation, GalleryImage, Program, ...)
+models/         Mongoose schemas (Settings, Product, Order, GalleryImage, Program, ...)
 middleware/     Admin auth guard
-routes/         public.js (site pages), api.js (donations/leaderboard JSON),
+routes/         public.js (site pages), api.js (orders JSON),
                 admin.js (admin panel), webhook.js (Razorpay webhook)
 utils/          Razorpay helpers, image upload (Cloudinary/local), money &
                 date formatting
@@ -284,7 +285,7 @@ vercel.json     Routes every request to api/index.js on Vercel
 
 - **"Failed to start: connect ECONNREFUSED ..."** — `MONGODB_URI` is wrong or your database isn't reachable. If using Atlas, double check the Network Access allowlist and that the password in the connection string is URL-encoded if it contains special characters.
 - **Uploaded photos disappear after a while** — you're likely on a host with a non-persistent filesystem (e.g. Render free tier after a redeploy). Add Cloudinary credentials (see section 5).
-- **The Donate page shows "online payments aren't set up yet"** — `RAZORPAY_KEY_ID`/`RAZORPAY_KEY_SECRET` are missing from your environment.
+- **Checkout always shows UPI tap-to-pay instead of the Razorpay window** — this is expected whenever `RAZORPAY_KEY_ID`/`RAZORPAY_KEY_SECRET` are missing from your environment; add them (section 3) for in-browser card/UPI checkout via Razorpay instead.
 - **A payment succeeded in Razorpay but doesn't show on the site** — check that the webhook (section 3, step 4) is configured and that `RAZORPAY_WEBHOOK_SECRET` matches what's in the Razorpay dashboard; check your host's logs for `[webhook]` messages.
 - **Festival countdown / date fields look off by several hours** — the admin's festival date/time field is always interpreted as India Standard Time (UTC+5:30) regardless of what timezone your server runs in, so this should self-correct; if it doesn't, confirm your server's system clock is correct.
 - **On Vercel: photo uploads fail or 500 errors on image-heavy admin pages** — almost always means Cloudinary isn't configured. Vercel's filesystem can't be written to at runtime, so the local-disk fallback errors out. Add the three `CLOUDINARY_*` environment variables in Vercel's project settings and redeploy.
@@ -293,4 +294,3 @@ vercel.json     Routes every request to api/index.js on Vercel
 ---
 
 Built with Node.js, Express, MongoDB and Razorpay.
-"# temple-website" 

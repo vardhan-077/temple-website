@@ -1,7 +1,7 @@
 {
   "name": "temple-website",
   "version": "1.0.0",
-  "description": "Full-stack temple website with dynamic settings, donation leaderboard, Razorpay donations, galleries by year, and a mobile-friendly admin panel.",
+  "description": "Full-stack temple website with dynamic settings, a product shop with cart/checkout (Razorpay or UPI), galleries by year, and a mobile-friendly admin panel.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

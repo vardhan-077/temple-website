@@ -36,7 +36,7 @@ app.locals.formatINR = formatINR;
 // Security headers. NOTE: Content-Security-Policy is intentionally left off
 // helmet's defaults here, because a strict CSP can silently break the
 // Razorpay Checkout script/iframe if not tuned exactly right, and a broken
-// donate button is worse than a missing CSP header. Once you've confirmed
+// checkout is worse than a missing CSP header. Once you've confirmed
 // live payments work end-to-end, you can turn on a tuned CSP - see the
 // README section "Tightening security before you go fully live".
 app.use(helmet({ contentSecurityPolicy: false }));
