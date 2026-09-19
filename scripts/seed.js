@@ -38,7 +38,6 @@ async function seed() {
       whatsappNumber: '919000000000',
       logoUrl: `${PLACEHOLDER_BASE}/logo-placeholder.svg`,
       heroImageUrl: '',
-      donationTargetAmount: 1000000,
       bankDetails: {
         accountName: 'Sri Venkateswara Temple Trust',
         accountNumber: '000000000000',
@@ -49,7 +48,7 @@ async function seed() {
       upiId: 'yourtemple@upi',
       upiQrImageUrl: `${PLACEHOLDER_BASE}/upi-qr-placeholder.svg`,
       taxInfo:
-        'Sample text: Donations to Sri Venkateswara Temple Trust are eligible for tax exemption under Section 80G. PAN: AAAAA0000A. Replace this from Admin → Settings with your trust’s real registration and tax details.',
+        'Sample text: Sri Venkateswara Temple Trust is a registered charitable trust. Reg. No.: XXXX. Replace this from Admin → Settings with your trust’s real registration details.',
       festival: { name: 'Annual Brahmotsavam', dateTime: nextFestival, enabled: true },
       socialLinks: { facebook: '', instagram: '', youtube: '' },
     });
