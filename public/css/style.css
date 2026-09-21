@@ -1116,7 +1116,7 @@ footer a:hover { color: var(--gold-light); }
   transition: transform 0.15s ease;
 }
 .fab:hover { transform: translateY(-2px); }
-.fab-shop {
+.fab-donate {
   background: linear-gradient(135deg, var(--gold-bright), var(--gold));
   color: var(--maroon-darkest);
 }
