@@ -1,12 +1,17 @@
 const Order = require('../models/Order');
+const Donation = require('../models/Donation');
 const razorpayUtil = require('../utils/razorpay');
 
 /**
  * Handles Razorpay webhook events. This is the reliable backstop for
- * confirming payments - unlike the browser-side /api/orders/verify call,
- * it doesn't depend on the buyer's browser staying open. Mounted in
- * server.js with express.raw() so req.body is the exact bytes Razorpay
- * signed (required for signature verification).
+ * confirming payments - unlike the browser-side /api/orders/verify or
+ * /api/donations/verify calls, it doesn't depend on the buyer's browser
+ * staying open. Mounted in server.js with express.raw() so req.body is the
+ * exact bytes Razorpay signed (required for signature verification).
+ *
+ * A single Razorpay account is used for both the shop and donations, so a
+ * given razorpayOrderId could belong to either an Order or a Donation - we
+ * check both collections rather than assuming one.
  *
  * Set this up in Razorpay Dashboard -> Settings -> Webhooks, pointing at
  * https://<your-domain>/api/razorpay/webhook, and put the secret you choose
@@ -46,6 +51,14 @@ async function handleRazorpayWebhook(req, res) {
         if (paymentId) order.razorpayPaymentId = paymentId;
         await order.save();
         console.log(`[webhook] Marked order ${order._id} as paid via webhook (${event.event}).`);
+      } else if (!order) {
+        const donation = await Donation.findOne({ razorpayOrderId: orderId });
+        if (donation && donation.status !== 'paid') {
+          donation.status = 'paid';
+          if (paymentId) donation.razorpayPaymentId = paymentId;
+          await donation.save();
+          console.log(`[webhook] Marked donation ${donation._id} as paid via webhook (${event.event}).`);
+        }
       }
     }
     // Other event types (payment.failed, etc.) are safe to ignore - we
