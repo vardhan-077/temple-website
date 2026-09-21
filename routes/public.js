@@ -215,5 +215,8 @@ router.get('/terms', (req, res) => {
 router.get('/refund-policy', (req, res) => {
   res.render('public/refund-policy', { pageTitle: 'Refund & Return Policy', activeNav: '' });
 });
+router.get('/shipping-policy', (req, res) => {
+  res.render('public/shipping-policy', { pageTitle: 'Shipping Policy', activeNav: '' });
+});
 
 module.exports = router;
