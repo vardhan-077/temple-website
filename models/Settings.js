@@ -48,6 +48,8 @@ const settingsSchema = new mongoose.Schema(
       ],
     },
 
+    donationTargetAmount: { type: Number, default: 500000 },
+
     bankDetails: {
       accountName: { type: String, default: 'Sri Temple Trust' },
       accountNumber: { type: String, default: '000000000000' },
