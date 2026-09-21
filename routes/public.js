@@ -8,14 +8,21 @@ const ContactMessage = require('../models/ContactMessage');
 const Program = require('../models/Program');
 const Announcement = require('../models/Announcement');
 const Donor = require('../models/Donor');
+const Donation = require('../models/Donation');
 const ShilapalakaPhoto = require('../models/ShilapalakaPhoto');
 const Festival = require('../models/Festival');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
+const razorpayUtil = require('../utils/razorpay');
 
 // GET /
 router.get('/', async (req, res, next) => {
   try {
+    const { total, count } = await Donation.getTotalRaised();
+    const leaderboard = await Donation.getLeaderboard(10);
+    const target = res.locals.settings.donationTargetAmount || 0;
+    const percent = target > 0 ? Math.min(100, Math.round((total / target) * 100)) : 0;
+
     const tenDaysOut = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
     const upcomingPrograms = await Program.find({ isActive: true, dateTime: { $gte: new Date(), $lte: tenDaysOut } })
       .sort({ dateTime: 1 })
@@ -28,6 +35,8 @@ router.get('/', async (req, res, next) => {
     res.render('public/home', {
       pageTitle: 'Home',
       activeNav: 'home',
+      donation: { total, count, percent, target },
+      leaderboard,
       upcomingPrograms,
       announcements,
       festivals,
@@ -155,6 +164,30 @@ router.post('/contact', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+// GET /donate
+router.get('/donate', async (req, res, next) => {
+  try {
+    const { total, count } = await Donation.getTotalRaised();
+    const target = res.locals.settings.donationTargetAmount || 0;
+    const percent = target > 0 ? Math.min(100, Math.round((total / target) * 100)) : 0;
+
+    res.render('public/donate', {
+      pageTitle: 'Donate',
+      activeNav: 'donate',
+      donation: { total, count, percent, target },
+      razorpayEnabled: razorpayUtil.isConfigured,
+      extraScript: '/js/donate.js',
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /donate/thank-you
+router.get('/donate/thank-you', (req, res) => {
+  res.render('public/donate-thank-you', { pageTitle: 'Thank You', activeNav: 'donate' });
 });
 
 // GET /products - the temple shop catalog, grouped by category

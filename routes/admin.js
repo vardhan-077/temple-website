@@ -7,6 +7,7 @@ const Settings = require('../models/Settings');
 const GalleryImage = require('../models/GalleryImage');
 const History = require('../models/History');
 const CommitteeMember = require('../models/CommitteeMember');
+const Donation = require('../models/Donation');
 const ContactMessage = require('../models/ContactMessage');
 const Program = require('../models/Program');
 const Announcement = require('../models/Announcement');
@@ -76,9 +77,21 @@ router.use(requireAdminAuth);
 router.get(
   '/',
   wrap(async (req, res) => {
-    const [totals, recentOrders, unreadMessages, galleryCount, committeeCount, productCount, pendingOrderCount] = await Promise.all([
+    const [
+      orderTotals,
+      recentOrders,
+      donationTotals,
+      recentDonations,
+      unreadMessages,
+      galleryCount,
+      committeeCount,
+      productCount,
+      pendingOrderCount,
+    ] = await Promise.all([
       Order.getTotals(),
       Order.find().sort({ createdAt: -1 }).limit(6).lean(),
+      Donation.getTotalRaised(),
+      Donation.find().sort({ createdAt: -1 }).limit(6).lean(),
       ContactMessage.countDocuments({ status: 'new' }),
       GalleryImage.countDocuments(),
       CommitteeMember.countDocuments(),
@@ -89,8 +102,10 @@ router.get(
     res.render('admin/dashboard', {
       pageTitle: 'Dashboard',
       activeAdminNav: 'dashboard',
-      totals,
+      orderTotals,
       recentOrders,
+      donationTotals,
+      recentDonations,
       unreadMessages,
       galleryCount,
       committeeCount,
@@ -127,6 +142,7 @@ router.post(
     settings.email = b.email?.trim() || '';
     settings.whatsappNumber = (b.whatsappNumber || '').replace(/\D/g, '');
     settings.mapEmbedUrl = b.mapEmbedUrl?.trim() || '';
+    settings.donationTargetAmount = Math.max(0, Number(b.donationTargetAmount) || 0);
     settings.upiId = b.upiId?.trim() || '';
     settings.taxInfo = b.taxInfo?.trim() || '';
     settings.locationShort = b.locationShort?.trim() || '';
@@ -830,6 +846,59 @@ router.post(
       req.flash('success', 'Shilapalaka photo removed.');
     }
     res.redirect('/admin/shilapalaka');
+  })
+);
+
+// ===================== Donations =====================
+
+router.get(
+  '/donations',
+  wrap(async (req, res) => {
+    const donations = await Donation.find().sort({ createdAt: -1 }).limit(200).lean();
+    const totals = await Donation.getTotalRaised();
+    res.render('admin/donations', { pageTitle: 'Donations', activeAdminNav: 'donations', donations, totals });
+  })
+);
+
+router.post(
+  '/donations/manual',
+  wrap(async (req, res) => {
+    const amount = Number(req.body.amount);
+    if (!amount || amount <= 0) {
+      req.flash('error', 'Please enter a valid amount.');
+      return res.redirect('/admin/donations');
+    }
+    await Donation.create({
+      name: (req.body.name || '').trim() || 'Anonymous Devotee',
+      amount,
+      isAnonymous: req.body.isAnonymous === 'on',
+      method: 'manual',
+      status: 'paid',
+      note: (req.body.note || '').trim(),
+    });
+    req.flash('success', 'Manual donation recorded.');
+    res.redirect('/admin/donations');
+  })
+);
+
+router.post(
+  '/donations/:id/toggle-visibility',
+  wrap(async (req, res) => {
+    const donation = await Donation.findById(req.params.id);
+    if (donation) {
+      donation.visibleOnLeaderboard = !donation.visibleOnLeaderboard;
+      await donation.save();
+    }
+    res.redirect('/admin/donations');
+  })
+);
+
+router.post(
+  '/donations/:id/delete',
+  wrap(async (req, res) => {
+    await Donation.findByIdAndDelete(req.params.id);
+    req.flash('success', 'Donation record deleted.');
+    res.redirect('/admin/donations');
   })
 );
 
