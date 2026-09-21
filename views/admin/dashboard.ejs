@@ -5,12 +5,12 @@
 
 <div class="stat-grid">
   <div class="stat-card">
-    <span class="value"><%= formatINR(totals.total) %></span>
-    <span class="label">Total Paid Orders</span>
+    <span class="value"><%= formatINR(donationTotals.total) %></span>
+    <span class="label">Total Donations Raised</span>
   </div>
   <div class="stat-card">
-    <span class="value"><%= totals.count %></span>
-    <span class="label">Paid Order Count</span>
+    <span class="value"><%= formatINR(orderTotals.total) %></span>
+    <span class="label">Total Shop Revenue</span>
   </div>
   <div class="stat-card">
     <span class="value"><%= pendingOrderCount %></span>
@@ -20,6 +20,33 @@
     <span class="value"><%= unreadMessages %></span>
     <span class="label">Unread Messages</span>
   </div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h2>Recent Donations</h2>
+    <a href="/admin/donations" class="btn btn-outline btn-sm">View All</a>
+  </div>
+  <% if (!recentDonations.length) { %>
+    <p class="empty-hint">No donations recorded yet.</p>
+  <% } else { %>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Donor</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>
+          <% recentDonations.forEach(function(d) { %>
+          <tr>
+            <td><%= d.isAnonymous ? 'Anonymous Devotee' : d.name %></td>
+            <td><%= formatINR(d.amount) %></td>
+            <td><span class="badge badge-manual"><%= d.method %></span></td>
+            <td><span class="badge badge-<%= d.status %>"><%= d.status %></span></td>
+            <td><%= new Date(d.createdAt).toLocaleDateString('en-IN') %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
 </div>
 
 <div class="panel">
@@ -53,6 +80,7 @@
   <div class="panel-header"><h2>Quick Links</h2></div>
   <div class="action-row">
     <a href="/admin/settings" class="btn btn-outline btn-sm">Edit Temple Settings</a>
+    <a href="/admin/donations" class="btn btn-outline btn-sm">Add Manual Donation</a>
     <a href="/admin/products" class="btn btn-outline btn-sm">Manage Products (<%= productCount %>)</a>
     <a href="/admin/gallery" class="btn btn-outline btn-sm">Manage Gallery (<%= galleryCount %>)</a>
     <a href="/admin/committee" class="btn btn-outline btn-sm">Manage Committee (<%= committeeCount %>)</a>
