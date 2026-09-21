@@ -6,24 +6,27 @@
     <p class="muted">Last updated: <%= new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long' }) %></p>
 
     <h3>1. Information We Collect</h3>
-    <p>When you place an order, contact us, or use this website, we may collect: your name, phone number, email address (optional), delivery address, and details of the items you order. Payment details (card, UPI, netbanking information) are collected and processed directly by our payment partner, Razorpay, or by your own UPI app for direct UPI payments, and are never stored on our servers.</p>
+    <p>When you place an order, make a donation, contact us, or use this website, we may collect: your name, phone number, email address (optional), delivery address (for orders), and an optional message (for donations). Payment details (card, UPI, netbanking information) are collected and processed directly by our payment partner, Razorpay, or by your own UPI app / bank for direct UPI or bank transfer payments, and are never stored on our servers.</p>
 
     <h3>2. How We Use Your Information</h3>
-    <p>We use the information you provide to: process and record your order, arrange and coordinate delivery, contact you about your order if needed, and respond to messages sent through our Contact page. We do not sell, rent, or trade your personal information to third parties.</p>
+    <p>We use the information you provide to: process and record your order or donation, arrange and coordinate delivery, issue donation acknowledgements, contact you if needed, and respond to messages sent through our Contact page. We do not sell, rent, or trade your personal information to third parties.</p>
 
-    <h3>3. Payment Processing</h3>
-    <p>Where available, online payments are processed through Razorpay, a licensed payment aggregator. Your payment information is subject to Razorpay's own privacy policy and security practices - we only receive confirmation of a successful payment and a payment reference ID. Where you pay directly via UPI, we only receive the details you and your bank choose to share with us for confirmation.</p>
+    <h3>3. Donor Leaderboard &amp; Public Recognition</h3>
+    <p>When you make a donation, your name and donation amount may be displayed publicly on our website (for example, on the homepage donor leaderboard) as a way of recognising your generosity. If you would prefer not to be identified, simply select the "Donate anonymously" option on the donation form and your contribution will be shown as "Anonymous Devotee" instead of your name. Your email, phone number and any message you leave with a donation are never displayed publicly.</p>
 
-    <h3>4. Order Records</h3>
-    <p>We retain order records (items, amount, delivery details) for accounting, fulfilment and customer support purposes.</p>
+    <h3>4. Payment Processing</h3>
+    <p>Where available, online payments (for orders or donations) are processed through Razorpay, a licensed payment aggregator. Your payment information is subject to Razorpay's own privacy policy and security practices - we only receive confirmation of a successful payment and a payment reference ID. Where you pay directly via UPI or bank transfer, we only receive the details you and your bank choose to share with us for confirmation.</p>
 
-    <h3>5. Cookies</h3>
+    <h3>5. Order &amp; Donation Records</h3>
+    <p>We retain order and donation records (items or amount, relevant contact details) for accounting, fulfilment, donor acknowledgement and customer support purposes.</p>
+
+    <h3>6. Cookies</h3>
     <p>This website uses a minimal session cookie only when an administrator logs into the admin panel, to keep them signed in. Your shopping cart is stored only in your own browser (not on our servers) so it stays with you as you browse. We do not use tracking or advertising cookies.</p>
 
-    <h3>6. Data Security</h3>
+    <h3>7. Data Security</h3>
     <p>We take reasonable technical measures to protect the information you share with us. However, no method of electronic storage or transmission is 100% secure.</p>
 
-    <h3>7. Contact Us</h3>
+    <h3>8. Contact Us</h3>
     <p>If you have questions about this Privacy Policy or how your information is handled, please contact us at <a href="mailto:<%= settings.email %>"><%= settings.email %></a> or <%= settings.phone %>.</p>
   </div>
 </section>
