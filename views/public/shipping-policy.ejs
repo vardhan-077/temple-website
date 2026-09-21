@@ -1,0 +1,31 @@
+<%- include('../partials/_layout-top') %>
+
+<section class="section">
+  <div class="container" style="max-width:800px;">
+    <h1>Shipping Policy</h1>
+    <p class="muted">Last updated: <%= new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long' }) %></p>
+
+    <h3>1. Where We Ship</h3>
+    <p>We currently ship orders placed through this website to addresses within India only.</p>
+
+    <h3>2. Processing Time</h3>
+    <p>Orders are typically processed and dispatched within 3-5 business days of payment confirmation. Pooja items and made-to-order items may occasionally take a little longer during festival season - if so, we will let you know using the phone number or email you provide at checkout.</p>
+
+    <h3>3. Delivery Time</h3>
+    <p>Once dispatched, delivery typically takes 5-10 business days depending on your location, via India Post or a reputable courier partner. Remote areas may take a little longer.</p>
+
+    <h3>4. Shipping Charges</h3>
+    <p>We do not add separate shipping charges at checkout - the total shown when you place your order is the final amount you pay.</p>
+
+    <h3>5. Order Updates</h3>
+    <p>We will contact you using the phone number or email provided at checkout to confirm your order and keep you updated on dispatch and delivery. Please make sure your delivery address and phone number are accurate and complete.</p>
+
+    <h3>6. Delivery Issues</h3>
+    <p>If your order hasn't arrived within the expected time, or you believe it was lost in transit, please contact us at <a href="mailto:<%= settings.email %>"><%= settings.email %></a> or <%= settings.phone %> with your Order ID, and we'll look into it with our courier partner. If an item arrives damaged, defective or incorrect, see our <a href="/refund-policy">Refund &amp; Return Policy</a> for how to report it.</p>
+
+    <h3>7. Contact</h3>
+    <p>For any shipping or delivery question, reach out to us at <a href="mailto:<%= settings.email %>"><%= settings.email %></a> or via the <a href="/contact">Contact page</a>.</p>
+  </div>
+</section>
+
+<%- include('../partials/_layout-bottom') %>
