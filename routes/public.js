@@ -19,7 +19,10 @@ const razorpayUtil = require('../utils/razorpay');
 router.get('/', async (req, res, next) => {
   try {
     const { total, count } = await Donation.getTotalRaised();
-    const leaderboard = await Donation.getLeaderboard(10);
+    // Every paid donation allowed on the public board, highest first. 0 = no
+    // limit (MongoDB treats a limit of 0 as "return everything"): the board
+    // scrolls on the page, so every donor is shown, not just a top 10.
+    const leaderboard = await Donation.getLeaderboard(0);
     const target = res.locals.settings.donationTargetAmount || 0;
     const percent = target > 0 ? Math.min(100, Math.round((total / target) * 100)) : 0;
 
