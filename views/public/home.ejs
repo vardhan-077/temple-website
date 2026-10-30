@@ -201,25 +201,33 @@
 <section class="section">
   <div class="container">
     <div class="grid grid-2">
-      <div>
+      <div class="leaderboard-col">
         <div class="section-header" style="text-align:left; margin-bottom:20px;">
-          <span class="eyebrow">Top Donors</span>
+          <span class="eyebrow">Every Donor Honoured</span>
           <h2>Live Donation Leaderboard</h2>
         </div>
         <div class="leaderboard-card">
-          <ul class="leaderboard-list" id="leaderboardList">
-            <% if (!leaderboard.length) { %>
-              <li class="leaderboard-empty">Be the first to donate today!</li>
-            <% } else { %>
-              <% leaderboard.forEach(function(d, i) { %>
-              <li>
-                <span class="leaderboard-rank"><%= i + 1 %></span>
-                <span class="leaderboard-name"><%= d.isAnonymous ? 'Anonymous Devotee' : d.name %></span>
-                <span class="leaderboard-amount">&#8377;<%= d.amount.toLocaleString('en-IN') %></span>
-              </li>
-              <% }) %>
-            <% } %>
-          </ul>
+          <% if (leaderboard.length) { %>
+            <p class="leaderboard-note">
+              Every donor, highest first<% if (leaderboard.length > 7) { %> &middot; <span class="leaderboard-scroll-hint">scroll to see all &darr;</span><% } %>
+            </p>
+          <% } %>
+          <div class="leaderboard-scroll" tabindex="0" role="region" aria-label="All donors, highest first (scrollable list)">
+            <ul class="leaderboard-list" id="leaderboardList">
+              <% if (!leaderboard.length) { %>
+                <li class="leaderboard-empty">Be the first to donate today!</li>
+              <% } else { %>
+                <% leaderboard.forEach(function(d, i) { %>
+                <li>
+                  <span class="leaderboard-rank"><%= i + 1 %></span>
+                  <span class="leaderboard-name"><%= d.isAnonymous ? 'Anonymous Devotee' : d.name %></span>
+                  <span class="leaderboard-amount">&#8377;<%= d.amount.toLocaleString('en-IN') %></span>
+                </li>
+                <% }) %>
+              <% } %>
+            </ul>
+          </div>
+          <a href="/donate" class="btn btn-primary btn-sm leaderboard-cta">Donate &amp; add your name</a>
         </div>
       </div>
       <div>
