@@ -1,0 +1,90 @@
+<%- include('../partials/_admin-layout-top') %>
+
+<h1>Export Data</h1>
+<p class="hint" style="margin-top:-8px;">Download your records as spreadsheet files (CSV). Open them with Excel or Google Sheets (on a phone, choose Google Sheets) and Telugu names show correctly.</p>
+
+<form method="GET" action="/admin/export">
+
+  <div class="panel">
+    <h2>1. Choose dates (optional)</h2>
+    <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Leave both boxes empty to include everything. For one festival, pick its first and last day. Dates use Indian time (IST).</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="from">From</label>
+        <input type="date" id="from" name="from" value="<%= range.from %>">
+      </div>
+      <div class="form-group">
+        <label for="to">To</label>
+        <input type="date" id="to" name="to" value="<%= range.to %>">
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button type="submit" class="btn btn-outline">Show totals for these dates</button>
+      <% if (range.from || range.to) { %>
+        <a href="/admin/export" class="btn btn-outline">Clear dates</a>
+      <% } %>
+    </div>
+  </div>
+
+  <h2>Totals &middot; <%= rangeText %></h2>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span class="value"><%= formatINR(donationTotals.total) %></span>
+      <span class="label">Donations Received</span>
+    </div>
+    <div class="stat-card">
+      <span class="value"><%= donationTotals.count %></span>
+      <span class="label">Paid Donations</span>
+    </div>
+    <div class="stat-card">
+      <span class="value"><%= formatINR(orderTotals.total) %></span>
+      <span class="label">Shop Orders (paid)</span>
+    </div>
+    <div class="stat-card">
+      <span class="value"><%= orderTotals.count %></span>
+      <span class="label">Paid Orders</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>2. Download a file</h2>
+    <p class="hint" style="margin-top:-8px; margin-bottom:6px;">Each file covers the dates chosen above. Tap a button and the file downloads to your device.</p>
+
+    <div style="padding:16px 0; border-top:1px solid var(--cream-dark);">
+      <h3 style="font-size:1.05rem; margin-bottom:4px;">Donations</h3>
+      <p class="hint" style="margin:0 0 10px;">Date, donor name, amount, phone, email, message and payment details. Online payments and cash / manual entries come together in one file. <strong><%= donationRecords %></strong> record<%= donationRecords === 1 ? '' : 's' %> for these dates.</p>
+      <div class="form-group checkbox-row">
+        <input type="checkbox" id="donationsPaidOnly" name="donationsPaidOnly" value="1" <%= donationsPaidOnly ? 'checked' : '' %>>
+        <label for="donationsPaidOnly">Only completed (paid) donations</label>
+      </div>
+      <button type="submit" class="btn btn-primary" formaction="/admin/export/donations.csv">&#128190; Download Donations</button>
+    </div>
+
+    <div style="padding:16px 0; border-top:1px solid var(--cream-dark);">
+      <h3 style="font-size:1.05rem; margin-bottom:4px;">Shop Orders</h3>
+      <p class="hint" style="margin:0 0 10px;">Customer, phone, delivery address, items, total, payment and delivery status. <strong><%= orderRecords %></strong> order<%= orderRecords === 1 ? '' : 's' %> for these dates.</p>
+      <div class="form-group checkbox-row">
+        <input type="checkbox" id="ordersPaidOnly" name="ordersPaidOnly" value="1" <%= ordersPaidOnly ? 'checked' : '' %>>
+        <label for="ordersPaidOnly">Only paid orders</label>
+      </div>
+      <button type="submit" class="btn btn-primary" formaction="/admin/export/orders.csv">&#128190; Download Orders</button>
+    </div>
+
+    <div style="padding:16px 0 4px; border-top:1px solid var(--cream-dark);">
+      <h3 style="font-size:1.05rem; margin-bottom:4px;">Donor Honor Roll</h3>
+      <p class="hint" style="margin:0 0 10px;">The full list shown on the public Donors page (name, category, year, note). Always includes everyone, whatever dates are chosen. <strong><%= donorCount %></strong> donor<%= donorCount === 1 ? '' : 's' %>.</p>
+      <button type="submit" class="btn btn-primary" formaction="/admin/export/donors.csv">&#128190; Download Donor List</button>
+    </div>
+  </div>
+
+</form>
+
+<div class="panel">
+  <h2>Good to know</h2>
+  <p class="hint" style="margin-top:0; font-size:0.85rem; line-height:1.6;">
+    <strong>Keep a backup.</strong> The free database plan has no automatic backups, so download these files after every festival (or once a month) and save them in Google Drive or send them to yourself.<br>
+    <strong>Keep them private.</strong> The files contain donors' phone numbers and email addresses. Share them only with committee members who need them.
+  </p>
+</div>
+
+<%- include('../partials/_admin-layout-bottom') %>
