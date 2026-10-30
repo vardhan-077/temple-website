@@ -72,6 +72,15 @@ router.post('/logout', (req, res) => {
 // Everything below this line requires a logged-in admin.
 router.use(requireAdminAuth);
 
+// Spreadsheet (CSV) downloads of donations, orders and donors. If one of its
+// files is ever missing (e.g. after a partial upload), only this page is
+// unavailable - the rest of the admin panel and the public site keep working.
+try {
+  router.use('/export', require('./admin-export'));
+} catch (err) {
+  console.error('[admin] Export Data page is unavailable:', err.message);
+}
+
 // ===================== Dashboard =====================
 
 router.get(
